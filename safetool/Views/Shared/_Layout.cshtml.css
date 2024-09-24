@@ -1,0 +1,13 @@
+﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+.header__section {
+    background: var(--var-color-main);
+    min-height: 6rem;
+    box-sizing: border-box;
+}
+
+.header__title {
+    color: white;
+    font-weight: 600;
+}

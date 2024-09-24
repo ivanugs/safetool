@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<style>
+    #steps__icon {
+        width: 160px ;
+    }
+
+    #main__header, #main__subtitle {
+        color: var(--var-color-main-font);
+    }
+
+    #main__steps, #main__link, #main__aclarations {
+        color: var(--var-color-text);
+    }
+
+    span {
+        color: var(--var-color-main-font);
+        font-weight: 600;
+    }
+</style>
+
+<section id="main__content" class="d-flex flex-column align-items-md-start align-items-center">
+
+    <div id="main__header" class="d-flex flex-column justify-content-center flex-wrap gap-3 text-center text-md-start">
+        <p id="main__title" class="display-6">Consulta el analisis de riesgo de maquinarias y herramientas que utilizas</p>
+        <p id="main__subtitle" class="display-6">¡En tan solo 3 sencillos pasos!</p>
+    </div>
+
+    <div id="main__context" class="w-100 mt-4 d-flex flex-column mt-md-5 gap-4 gap-md-5">
+
+        <div id="main__container__steps" class="d-flex flex-column flex-lg-row justify-content-md-between gap-4 fs-5">
+
+            <div id="main__steps" class='d-flex flex-column gap-4 fs-4'>
+                <p><span>1.</span> Ingresa al sitio web por medio del acceso directo <span>SafeTool</span> que se encuentra en tu escriotrio e inicia sesión.</p>
+                <img style="width:180px;" id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/Continental_Pictogram_Application_sRGB.png' alt='Icono identificar' />
+            </div>
+
+            <div id="main__steps" class='d-flex flex-column gap-4 fs-4'>
+                <p>
+                    <span>2.</span> En el apartado de <span><a class="text-warning" id="main__link" asp-action="Index" asp-controller="Devices">Equipos</a></span> identifica la maquinaria o herramienta que usaras, seleccionando tu localidad y el area de interes.
+                </p>
+                <img id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/search_sRGB.png' alt='Icono codigo qr' />
+            </div>
+
+            <div id="main__steps" class='d-flex flex-column gap-4 fs-4'>
+                <p><span>3.</span> Da clic en el equipo de tu interes, consulta y acepta que has leido y comprendido el analisis de riesgo.</p>
+                <img style="width:150px;" id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/checklist.png' alt='Icono escanear' />
+            </div>
+
+        </div>
+
+        <p id="main__subtitle" class="display-6 fw-bolder text-center text-md-start">¡Listo!</p>
+
+        <a id="main__link" class="text-warning fs-4 text-center text-md-start" asp-action="Index" asp-controller="Devices">
+            <p>Consultar listado de maquinarias y herramientas</p>
+        </a>
+
+    </div>
+
+    <div id="main__aclarations" class="fs-5 mt-5 fst-italic text-center text-md-start">
+        <p>Para aclaraciones o dudas consulta a tu equipo de EHS local.</p>
+    </div>
+
+</section>

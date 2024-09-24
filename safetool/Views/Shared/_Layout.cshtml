@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Safetool</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/safetool.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/reset.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.0/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <header role="heading" class="d-flex flex-row justify-content-between align-items-center px-3 header__section">
+        <div class="d-flex">
+            <p class="h2 header__title">SafeTool</p>
+        </div>
+        <div class="d-flex flex-row justify-content-center align-items-center">
+            <img style="width:20rem;" class="header__logo" src="~/images/branding/Continental_Logo_Tagline_White.png" alt="Logo Continental" />
+        </div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="d-flex flex-column text-white fs-5 justify-content-center align-items-end">
+                <p>@User.Identity.Name | </p>
+                <form asp-controller="Auth" asp-action="Logout" method="post">
+                    <button type="submit" class="btn btn-link text-white fs-5 p-0 m-0" style="text-decoration: none;"><i style="transform: rotate(180deg)" class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
+                </form>
+            </div>
+        }
+    </header>
+
+    <div class="">
+        <main role="main" class="pb-3 main__section">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/jquery.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
