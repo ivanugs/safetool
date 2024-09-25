@@ -11,6 +11,6 @@ namespace safetool.Models
         public int RoleID { get; set; } // Foreign key property
 
         // Required reference navigation to principal
-        public Role Role { get; set; } = null!;
+        public virtual Role? Role { get; set; }
     }
 }

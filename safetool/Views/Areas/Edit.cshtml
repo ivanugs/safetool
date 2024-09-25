@@ -1,0 +1,44 @@
+﻿@model safetool.Models.Area
+
+@{
+    ViewData["Title"] = "Edicion";
+}
+
+<h1 class="fs-5 mb-3">Administración de áreas</h1>
+
+<h4>Editar area</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="mb-3">
+                <label asp-for="LocationID" class="form-label">Localidad:</label>
+                <select asp-for="LocationID" class="form-select" asp-items="ViewBag.Locations"></select>
+                <span asp-validation-for="LocationID" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Nombre del área:</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Active" /> Activo?
+                </label>
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="f-6">
+    <a asp-action="Index">Regresar al listado</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

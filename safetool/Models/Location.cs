@@ -12,6 +12,6 @@ namespace safetool.Models
         public bool Active {  get; set; }
 
         // Relacion uno a varios obligatoria con Area
-        public ICollection<Area> Areas { get; } = new List<Area>();
+        public ICollection<Area> Areas { get; set; } = new List<Area>();
     }
 }

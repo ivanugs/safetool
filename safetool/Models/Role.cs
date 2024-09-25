@@ -12,6 +12,6 @@ namespace safetool.Models
         public bool Active { get; set; }
 
         // Collection navigation containing dependents
-        public ICollection<UserRole> UserRoles { get; } = new List<UserRole>();
+        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 }

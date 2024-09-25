@@ -1,0 +1,39 @@
+﻿@model safetool.Models.UserRole
+
+@{
+    ViewData["Title"] = "Edicion";
+}
+
+<h1 class="fs-5 mb-3">Administración de usuarios</h1>
+
+<h4>Editar usuario</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="mb-3">
+                <label asp-for="UserName" class="form-label">UID:</label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="RoleID" class="form-label">Rol:</label>
+                <select asp-for="RoleID" class="form-select" asp-items="ViewBag.Roles"></select>
+                <span asp-validation-for="RoleID" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="f-6">
+    <a asp-action="Index">Regresar al listado</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

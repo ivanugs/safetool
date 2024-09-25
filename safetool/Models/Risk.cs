@@ -11,6 +11,6 @@ namespace safetool.Models
         public bool Active { get; set; }
 
         // Relación muchos a muchos con Device
-        public List<Device> Devices { get; } = new List<Device>();
+        public List<Device> Devices { get; set; } = new List<Device>();
     }
 }

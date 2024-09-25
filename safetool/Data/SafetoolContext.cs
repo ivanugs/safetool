@@ -210,8 +210,6 @@ namespace safetool.Data
             modelBuilder.Entity<UserRole>().HasData(
                 new UserRole { ID = 1, UserName = "uig65332", RoleID = 1 }
             );
-
-            base.OnModelCreating(modelBuilder);
         }
     }
 }

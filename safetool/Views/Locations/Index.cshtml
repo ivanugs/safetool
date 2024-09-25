@@ -1,0 +1,54 @@
+﻿@model IEnumerable<safetool.Models.Location>
+
+@{
+    ViewData["Title"] = "Localidades";
+}
+
+<h1 class="fs-5 mb-3">Administración de localidades</h1>
+
+<p class="fs-6 mb-3">
+    <a asp-action="Create">Agregar registro</a>
+</p>
+
+<table class="table table-hover fs-6">
+    <thead class="mb-2">
+        <tr>
+            <th scope="col">
+                #
+            </th>
+            <th scope="col">
+                Localidad
+            </th>
+            <th scope="col">
+                Acrónimo
+            </th>
+            <th scope="col">
+                Activo?
+            </th>
+            <th scope="col">
+                Acciones
+            </th>
+        </tr>
+    </thead>
+    <tbody class="fs-6">
+    @foreach (var item in Model) {
+        <tr>
+            <th scope="row">@Html.DisplayFor(modelItem => item.ID)</th>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Acronym)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Active)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Editar</a>
+                @* <a asp-action="Details" asp-route-id="@item.ID">Details</a> | *@
+                @* <a asp-action="Delete" asp-route-id="@item.ID">Delete</a> *@
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -12,19 +12,19 @@ namespace safetool.Models
         //public Location Location { get; set; } = null!; // relacion de uno a varios obligatoria con Location
 
         public int AreaID { get; set; } //Foreign key property
-        public Area Area { get; set; } = null!; // relacion de uno a varios obligatoria con Area
+        public Area? Area { get; set; } // relacion de uno a varios obligatoria con Area
 
         public int DeviceTypeID { get; set; } //Foreign key property
-        public DeviceType DeviceType { get; set; } = null!; // relacion de uno a varios obligatoria con DeviceType
+        public DeviceType? DeviceType { get; set; } // relacion de uno a varios obligatoria con DeviceType
 
         public int RiskLevelID { get; set; } //Foreign key property
-        public RiskLevel RiskLevel { get; set; } = null!; // relacion de uno a varios obligatoria con RiskLevel
+        public RiskLevel? RiskLevel { get; set; } // relacion de uno a varios obligatoria con RiskLevel
 
         // Relación muchos a muchos con PPE
-        public List<PPE> PPEs { get; } = new List<PPE>();
+        public List<PPE> PPEs { get; set; } = new List<PPE>();
 
         // Relación muchos a muchos con Risk
-        public List<Risk> Risks { get; } = new List<Risk>();
+        public List<Risk> Risks { get; set; } = new List<Risk>();
 
         public required string Image {  get; set; }
         public required string Name { get; set; }
