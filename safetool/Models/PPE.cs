@@ -8,13 +8,13 @@ namespace safetool.Models
     {
         public int ID { get; set; }
         public required string Name { get; set; }
-        public required string Image { get; set; }
+        public string? Image { get; set; }
         public bool Active { get; set; }
 
         // Relación muchos a muchos con Device
         public List<Device> Devices { get; set; } = new List<Device>();
 
         [NotMapped]
-        public IFormFile? FormFile { get; set; }
+        public IFormFile? ImageFile { get; set; }
     }
 }

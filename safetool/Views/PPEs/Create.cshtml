@@ -2,23 +2,6 @@
 
 @{
     ViewData["Title"] = "Creación";
-
-    // WebImage photo = null;
-    // var newFileName = "";
-    // var imagePath = "";
-
-    // if (IsPost)
-    // {
-    //     photo = WebImage.GetImageFromRequest();
-    //     if (photo != null)
-    //     {
-    //         newFileName = Guid.NewGuid().ToString() + "_" +
-    //             Path.GetFileName(photo.FileName);
-    //         imagePath = @"images\" + newFileName;
-
-    //         photo.Save(@"~\" + imagePath);
-    //     }
-    // }
 }
 
 <h1 class="fs-5 mb-3">Administración de EPP</h1>
@@ -35,23 +18,13 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <fieldset>
-                    <legend>Que es esto marik</legend>
-                    <label asp-for="Image" class="form-label">Imagen:</label>
-                    <input asp-for="Image" class="form-control" type="file" />
-                    <span asp-validation-for="Image" class="text-danger"></span>
-                    <br />
-                    <input type="submit" value="Cargar Imagen" />
-                </fieldset>
+                <label asp-for="ImageFile" class="form-label">Imagen:</label>
+                <input asp-for="ImageFile" class="form-control" type="file" id="ImageFile" onchange="showPreview(event);"/>
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
-            @* <h1>Uploaded Image</h1>
-            @if (imagePath != "")
-            {
-                <div class="result">
-                    <img src="@imagePath" alt="image" />
-
-                </div>
-            } *@
+            <div class="mb-3">
+                <img id="imagePreview" src="#" alt="Vista previa de la imagen" style="display:none; max-width: 200px;" />
+            </div>
             <div class="mb-3 form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Active" /> Activo?
@@ -70,4 +43,20 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        function showPreview(event) {
+            var input = event.target;
+            var reader = new FileReader();
+
+            reader.onload = function(){
+                var dataURL = reader.result;
+                var imagePreview = document.getElementById('imagePreview');
+                imagePreview.src = dataURL;
+                imagePreview.style.display = "block";
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    </script>
 }

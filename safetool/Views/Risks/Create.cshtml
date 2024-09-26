@@ -1,43 +1,62 @@
 ﻿@model safetool.Models.Risk
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Creación";
 }
 
-<h1>Create</h1>
+<h1 class="fs-5 mb-3">Administración de riesgos</h1>
 
-<h4>Risk</h4>
+<h4>Crear nuevo riesgo</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Nombre del riesgo:</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
+            <div class="mb-3">
+                <label asp-for="ImageFile" class="form-label">Imagen:</label>
+                <input asp-for="ImageFile" class="form-control" type="file" id="ImageFile" onchange="showPreview(event);" />
                 <span asp-validation-for="Image" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
+            <div class="mb-3">
+                <img id="imagePreview" src="#" alt="Vista previa de la imagen" style="display:none; max-width: 200px;" />
+            </div>
+            <div class="mb-3 form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
+                    <input class="form-check-input" asp-for="Active" /> Activo?
                 </label>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="mb-3">
+                <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="f-6">
+    <a asp-action="Index">Regresar al listado</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        function showPreview(event) {
+            var input = event.target;
+            var reader = new FileReader();
+
+            reader.onload = function () {
+                var dataURL = reader.result;
+                var imagePreview = document.getElementById('imagePreview');
+                imagePreview.src = dataURL;
+                imagePreview.style.display = "block";
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    </script>
 }
