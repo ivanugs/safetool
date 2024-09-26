@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace safetool.Models
 {
@@ -12,5 +13,8 @@ namespace safetool.Models
 
         // Relación muchos a muchos con Device
         public List<Device> Devices { get; set; } = new List<Device>();
+
+        [NotMapped]
+        public IFormFile? FormFile { get; set; }
     }
 }

@@ -1,41 +1,71 @@
 ﻿@model safetool.Models.PPE
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Creación";
+
+    // WebImage photo = null;
+    // var newFileName = "";
+    // var imagePath = "";
+
+    // if (IsPost)
+    // {
+    //     photo = WebImage.GetImageFromRequest();
+    //     if (photo != null)
+    //     {
+    //         newFileName = Guid.NewGuid().ToString() + "_" +
+    //             Path.GetFileName(photo.FileName);
+    //         imagePath = @"images\" + newFileName;
+
+    //         photo.Save(@"~\" + imagePath);
+    //     }
+    // }
 }
 
-<h1>Create</h1>
+<h1 class="fs-5 mb-3">Administración de EPP</h1>
 
-<h4>PPE</h4>
+<h4>Crear nuevo EPP</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Nombre del EPP:</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
+            <div class="mb-3">
+                <fieldset>
+                    <legend>Que es esto marik</legend>
+                    <label asp-for="Image" class="form-label">Imagen:</label>
+                    <input asp-for="Image" class="form-control" type="file" />
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                    <br />
+                    <input type="submit" value="Cargar Imagen" />
+                </fieldset>
             </div>
-            <div class="form-group form-check">
+            @* <h1>Uploaded Image</h1>
+            @if (imagePath != "")
+            {
+                <div class="result">
+                    <img src="@imagePath" alt="image" />
+
+                </div>
+            } *@
+            <div class="mb-3 form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
+                    <input class="form-check-input" asp-for="Active" /> Activo?
                 </label>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="mb-3">
+                <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="f-6">
+    <a asp-action="Index">Regresar al listado</a>
 </div>
 
 @section Scripts {
