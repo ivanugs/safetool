@@ -198,39 +198,6 @@ namespace safetool.Controllers
             return View(risk);
         }
 
-        // GET: Risks/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var risk = await _context.Risks
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (risk == null)
-            {
-                return NotFound();
-            }
-
-            return View(risk);
-        }
-
-        // POST: Risks/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var risk = await _context.Risks.FindAsync(id);
-            if (risk != null)
-            {
-                _context.Risks.Remove(risk);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
         private bool RiskExists(int id)
         {
             return _context.Risks.Any(e => e.ID == id);
