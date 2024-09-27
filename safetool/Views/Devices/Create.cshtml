@@ -60,7 +60,7 @@
             </div>
             <div class="mb-3">
                 <label asp-for="LastMaintenance" class="form-label">Último mantenimiento:</label>
-                <input asp-for="LastMaintenance" class="form-control" />
+                <input asp-for="LastMaintenance" class="form-control" type="date"/>
                 <span asp-validation-for="LastMaintenance" class="text-danger"></span>
             </div>
             <div class="mb-3">
@@ -153,3 +153,6 @@
         }
     </script>
 }
+
+
+@* //https://alamdtech.com/seleccion-multiple-con-select2/ *@
