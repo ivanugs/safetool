@@ -61,6 +61,7 @@ namespace safetool.Controllers
                 if (risk.ImageFile == null || risk.ImageFile.Length == 0)
                 {
                     ModelState.AddModelError("ImageFile", "Debe subir una imagen.");
+                    return View(risk);
                 }
 
                 string uniqueFileName = null;
@@ -84,14 +85,14 @@ namespace safetool.Controllers
                 }
 
                 // Guardar los datos del modelo en la base de datos
-                var new_risk = new Risk
+                var newRisk = new Risk
                 {
                     Name = risk.Name,
                     Image = "/images/risks/" + uniqueFileName,
                     Active = risk.Active
                 };
 
-                _context.Add(risk);
+                _context.Add(newRisk);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

@@ -27,25 +27,43 @@
                 <img src="@Model.Image" alt="Imagen del riesgo" width="200" class="mb-2" />
                 <input asp-for="ImageFile" class="form-control" type="file" id="ImageFile" onchange="showPreview(event);" />
                 <span asp-validation-for="ImageFile" class="text-danger"></span>
-            </div>@* //pendiente *@
-
+            </div>
+            <div class="mb-3">
+                <img id="imagePreview" src="#" alt="Vista previa de la imagen" style="display:none; max-width: 200px;" />
+            </div>
             <div class="mb-3 form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
+                    <input class="form-check-input" asp-for="Active" /> Activo?
                 </label>
             </div>
 
             <div class="mb-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="f-6">
+    <a asp-action="Index">Regresar al listado</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        function showPreview(event) {
+            var input = event.target;
+            var reader = new FileReader();
+
+            reader.onload = function () {
+                var dataURL = reader.result;
+                var imagePreview = document.getElementById('imagePreview');
+                imagePreview.src = dataURL;
+                imagePreview.style.display = "block";
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    </script>
 }
