@@ -1,95 +1,155 @@
 ﻿@model safetool.Models.Device
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Creación";
 }
 
-<h1>Create</h1>
+<h1 class="fs-5 mb-3">Administración de equipos</h1>
 
-<h4>Device</h4>
+<h4>Crear nuevo equipo</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="LocationID" class="control-label"></label>
-                <input asp-for="LocationID" class="form-control" />
-                <span asp-validation-for="LocationID" class="text-danger"></span>
+            <div class="mb-3">
+                <label asp-for="LocationID" class="form-label">Localidad:</label>
+                <select asp-for="LocationID" class="form-select" asp-items="ViewBag.Locations" id="locations">
+                    <option value="" disabled selected>Selecciona una localidad</option>
+                </select>
             </div>
-            <div class="form-group">
-                <label asp-for="AreaID" class="control-label"></label>
-                <select asp-for="AreaID" class ="form-control" asp-items="ViewBag.AreaID"></select>
+            <div class="mb-3">
+                <label asp-for="AreaID" class="form-label">Área:</label>
+                <select asp-for="AreaID" class ="form-select" id="areas"></select>
             </div>
-            <div class="form-group">
-                <label asp-for="DeviceTypeID" class="control-label"></label>
-                <select asp-for="DeviceTypeID" class ="form-control" asp-items="ViewBag.DeviceTypeID"></select>
+            <div class="mb-3">
+                <label asp-for="DeviceTypeID" class="form-label">Tipo de equipo:</label>
+                <select asp-for="DeviceTypeID" class ="form-select" asp-items="ViewBag.DeviceTypes"></select>
             </div>
-            <div class="form-group">
-                <label asp-for="RiskLevelID" class="control-label"></label>
-                <select asp-for="RiskLevelID" class ="form-control" asp-items="ViewBag.RiskLevelID"></select>
+            <div class="mb-3">
+                <label asp-for="RiskLevelID" class="form-label">Nivel de riesgo del equipo:</label>
+                <select asp-for="RiskLevelID" class ="form-select" asp-items="ViewBag.RiskLevels"></select>
             </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
+            <div class="mb-3">
+                <label asp-for="ImageFile" class="form-label">Imagen:</label>
+                <input asp-for="ImageFile" class="form-control" type="file" id="ImageFile" onchange="showPreview(event);" />
                 <span asp-validation-for="Image" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+            <div class="mb-3">
+                <img id="imagePreview" src="#" alt="Vista previa de la imagen" style="display:none; max-width: 200px;" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Nombre del equipo:</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Function" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Function" class="form-label">Función del equipo:</label>
                 <input asp-for="Function" class="form-control" />
                 <span asp-validation-for="Function" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="SpecificFunction" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="SpecificFunction" class="form-label">Función específica del equipo:</label>
                 <input asp-for="SpecificFunction" class="form-control" />
                 <span asp-validation-for="SpecificFunction" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Operators" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="Operators" class="form-label">Operadores:</label>
                 <input asp-for="Operators" class="form-control" />
                 <span asp-validation-for="Operators" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="LastMaintenance" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="LastMaintenance" class="form-label">Último mantenimiento:</label>
                 <input asp-for="LastMaintenance" class="form-control" />
                 <span asp-validation-for="LastMaintenance" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="EmergencyStopImage" class="control-label"></label>
-                <input asp-for="EmergencyStopImage" class="form-control" />
-                <span asp-validation-for="EmergencyStopImage" class="text-danger"></span>
+            <div class="mb-3">
+                <label asp-for="ImageFileES" class="form-label">Imagen del paro de emergencia: (Solo sí aplica)</label>
+                <input asp-for="ImageFileES" class="form-control" type="file" id="ImageFileES" onchange="showPreviewES(event);" />
+                <span asp-validation-for="ImageFileES" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="TypeSafetyDevice" class="control-label"></label>
+            <div class="mb-3">
+                <img id="imagePreviewES" src="#" alt="Vista previa de la imagen" style="display:none; max-width: 200px;" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="TypeSafetyDevice" class="form-label">Dispositivo de seguridad: (Solo sí aplica)</label>
                 <input asp-for="TypeSafetyDevice" class="form-control" />
                 <span asp-validation-for="TypeSafetyDevice" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FunctionSafetyDevice" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="FunctionSafetyDevice" class="form-label">Función del dispositivo de seguridad:</label>
                 <input asp-for="FunctionSafetyDevice" class="form-control" />
                 <span asp-validation-for="FunctionSafetyDevice" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
+            <div class="mb-3 form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
+                    <input class="form-check-input" asp-for="Active" /> Activo?
                 </label>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="mb-3">
+                <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="f-6">
+    <a asp-action="Index">Regresar al listado</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.getElementById('locations').addEventListener('change', function () {
+            var locationID = this.value;
+            var areasSelect = document.getElementById('areas');
+
+            // Limpiar las opciones anteriores
+            areasSelect.innerHTML = '<option value="" disabled selected>Selecciona el área</option>';
+
+            if (locationID) {
+                fetch(`/Devices/GetAreasByLocation?locationId=${locationID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(area => {
+                            var option = document.createElement('option');
+                            option.value = area.id;
+                            option.text = area.name;
+                            areasSelect.appendChild(option);
+                        });
+                    });
+            }
+        });
+
+        // Mostrar la vista previa de la imagen del equipo
+        function showPreview(event) {
+                var input = event.target;
+            var reader = new FileReader();
+
+            reader.onload = function () {
+                        var dataURL = reader.result;
+            var imagePreview = document.getElementById('imagePreview');
+            imagePreview.src = dataURL;
+            imagePreview.style.display = "block";
+                    };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        // Mostrar vista previa de la imagen del paro de emergencia
+        function showPreviewES(event) {
+            var input = event.target;
+            var reader = new FileReader();
+
+            reader.onload = function () {
+                var dataURL = reader.result;
+                var imagePreviewES = document.getElementById('imagePreviewES');
+                imagePreviewES.src = dataURL;
+                imagePreviewES.style.display = "block";
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    </script>
 }

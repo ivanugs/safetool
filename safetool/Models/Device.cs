@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace safetool.Models
 {
@@ -26,7 +27,7 @@ namespace safetool.Models
         // Relación muchos a muchos con Risk
         public List<Risk> Risks { get; set; } = new List<Risk>();
 
-        public required string Image {  get; set; }
+        public string? Image {  get; set; }
         public required string Name { get; set; }
         public required string Function { get; set; }
         public required string SpecificFunction { get; set; }
@@ -36,5 +37,11 @@ namespace safetool.Models
         public string? TypeSafetyDevice { get; set; }
         public string? FunctionSafetyDevice { get; set; }
         public bool Active { get; set; }
+
+        [NotMapped]
+        public IFormFile? ImageFile { get; set; }
+
+        [NotMapped]
+        public IFormFile? ImageFileES {  get; set; }
     }
 }
