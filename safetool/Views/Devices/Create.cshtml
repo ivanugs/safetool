@@ -81,6 +81,18 @@
                 <input asp-for="FunctionSafetyDevice" class="form-control" />
                 <span asp-validation-for="FunctionSafetyDevice" class="text-danger"></span>
             </div>
+            <div class="mb-3">
+                <label asp-for="PPEs" class="form-label">Equipos de protección personal:</label>
+                <select asp-for="PPEs" class="form-select basic-multiple" asp-items="ViewBag.PPES" multiple>
+                    <option value="" disabled>Selecciona los EPP</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Risks" class="form-label">Riesgos:</label>
+                <select asp-for="Risks" class="form-select basic-multiple" asp-items="ViewBag.Risks" multiple>
+                    <option value="" disabled>Selecciona los riesgos</option>
+                </select>
+            </div>
             <div class="mb-3 form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Active" /> Activo?
@@ -101,6 +113,10 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script>
+        $(document).ready(function () {
+            $('.basic-multiple').select2();
+        });
+        
         document.getElementById('locations').addEventListener('change', function () {
             var locationID = this.value;
             var areasSelect = document.getElementById('areas');
@@ -153,6 +169,3 @@
         }
     </script>
 }
-
-
-@* //https://alamdtech.com/seleccion-multiple-con-select2/ *@

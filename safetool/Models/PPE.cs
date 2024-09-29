@@ -12,7 +12,7 @@ namespace safetool.Models
         public bool Active { get; set; }
 
         // Relación muchos a muchos con Device
-        public List<Device> Devices { get; set; } = new List<Device>();
+        public ICollection<Device> Devices { get; set; } = new List<Device>();
 
         [NotMapped]
         public IFormFile? ImageFile { get; set; }

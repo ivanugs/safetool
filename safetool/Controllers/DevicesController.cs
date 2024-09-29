@@ -53,6 +53,8 @@ namespace safetool.Controllers
             ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name");
             ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes, "ID", "Name");
             ViewData["RiskLevels"] = new SelectList(_context.RiskLevels, "ID", "Level");
+            ViewData["PPES"] = new MultiSelectList(_context.PPEs, "ID", "Name");
+            ViewData["Risks"] = new MultiSelectList(_context.Risks, "ID", "Name");
             return View();
         }
 
@@ -140,14 +142,90 @@ namespace safetool.Controllers
                     device.EmergencyStopImage = "/images/emergency_stops/" + uniqueFileNameEmergencyStop;
                 }
 
+                var selectedPPEs = Request.Form["PPEs"].ToArray();
+                var selectedRisks = Request.Form["Risks"].ToArray();
+
+                if (selectedPPEs != null && selectedPPEs.Any())
+                {
+                    Console.WriteLine($"Selected PPEs: {string.Join(", ", selectedPPEs)}");
+                    foreach (var ppeId in selectedPPEs)
+                    {
+                        if (int.TryParse(ppeId, out int parsedPPEId)) // Convertir ppeId a int
+                        {
+                            var ppe = await _context.PPEs.FindAsync(parsedPPEId);
+                            if (ppe != null)
+                            {
+                                Console.WriteLine($"Adding PPE with ID {parsedPPEId} to Device.");
+                                device.PPEs.Add(ppe);
+                            }
+                            else
+                            {
+                                Console.WriteLine($"PPE with ID {parsedPPEId} not found.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Invalid PPE ID: {ppeId}");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No PPEs selected.");
+                }
+
+                if (selectedRisks != null && selectedRisks.Any())
+                {
+                    Console.WriteLine($"Selected Risks: {string.Join(", ", selectedRisks)}");
+                    foreach (var riskId in selectedRisks)
+                    {
+                        if (int.TryParse(riskId, out int parsedRiskId)) // Convertir riskId a int
+                        {
+                            var risk = await _context.Risks.FindAsync(parsedRiskId);
+                            if (risk != null)
+                            {
+                                Console.WriteLine($"Adding Risk with ID {parsedRiskId} to Device.");
+                                device.Risks.Add(risk);
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Risk with ID {parsedRiskId} not found.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Invalid Risk ID: {riskId}");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No Risks selected.");
+                }
+
+                // Verifica la cantidad de PPEs y Risks asociados
+                Console.WriteLine($"Device has {device.PPEs.Count} PPEs and {device.Risks.Count} Risks.");
+
+
+
                 // Guardar los datos del modelo en la base de datos
                 _context.Add(device);
-                await _context.SaveChangesAsync();
+                var result = await _context.SaveChangesAsync();
+                Console.WriteLine($"SaveChanges result: {result}"); // Esto debería devolver el número de registros afectados
+
+                // Verificar el estado de las entidades
+                foreach (var entry in _context.ChangeTracker.Entries())
+                {
+                    Console.WriteLine($"Entity: {entry.Entity.GetType().Name}, State: {entry.State}");
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name");
             ViewData["DeviceTypeID"] = new SelectList(_context.DeviceTypes, "ID", "Name", device.DeviceTypeID);
             ViewData["RiskLevelID"] = new SelectList(_context.RiskLevels, "ID", "Level", device.RiskLevelID);
+            ViewData["PPES"] = new MultiSelectList(_context.PPEs, "ID", "Name");
+            ViewData["Risks"] = new MultiSelectList(_context.Risks, "ID", "Name");
             return View(device);
         }
 

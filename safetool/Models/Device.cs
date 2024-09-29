@@ -22,10 +22,10 @@ namespace safetool.Models
         public RiskLevel? RiskLevel { get; set; } // relacion de uno a varios obligatoria con RiskLevel
 
         // Relación muchos a muchos con PPE
-        public List<PPE> PPEs { get; set; } = new List<PPE>();
+        public ICollection<PPE> PPEs { get; set; } = new List<PPE>();
 
         // Relación muchos a muchos con Risk
-        public List<Risk> Risks { get; set; } = new List<Risk>();
+        public ICollection<Risk> Risks { get; set; } = new List<Risk>();
 
         public string? Image {  get; set; }
         public required string Name { get; set; }
