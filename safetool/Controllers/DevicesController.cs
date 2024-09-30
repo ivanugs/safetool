@@ -13,18 +13,44 @@ namespace safetool.Controllers
     public class DevicesController : Controller
     {
         private readonly SafetoolContext _context;
+        private readonly IConfiguration _configuration;
 
-        public DevicesController(SafetoolContext context)
+        public DevicesController(SafetoolContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // GET: Devices
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? locationID, int? areaID, int? pageIndex)
         {
-            var safetoolContext = _context.Devices.Include(d => d.Area).Include(d => d.DeviceType).Include(d => d.RiskLevel);
-            return View(await safetoolContext.ToListAsync());
+            // Obtener la lista de localidades para el dropdown
+            ViewBag.Locations = new SelectList(_context.Locations, "ID", "Name");
+            ViewBag.SelectedLocation = locationID;
+
+            // Consultar los dispositivos incluyendo las relaciones de navegación
+            IQueryable<Device> devices = _context.Devices
+                .Include(d => d.Area);     // Incluir la relación Area
+
+            // Filtrar por localidad si está seleccionada
+            if (locationID.HasValue)
+            {
+                devices = devices.Where(d => d.LocationID == locationID.Value);
+
+                // Cargar las áreas correspondientes a la localidad seleccionada
+                ViewBag.Areas = new SelectList(_context.Areas.Where(a => a.LocationID == locationID.Value), "ID", "Name");
+
+                // Si también se selecciona un área, aplicar el filtro
+                if (areaID.HasValue)
+                {
+                    devices = devices.Where(d => d.AreaID == areaID.Value);
+                }
+            }
+
+            int pageSize = 10;
+            return View(await PaginatedList<Device>.CreateAsync(devices.AsNoTracking(), pageIndex ?? 1, pageSize));
         }
+
 
         // GET: Devices/Details/5
         public async Task<IActionResult> Details(int? id)

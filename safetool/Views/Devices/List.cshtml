@@ -1,0 +1,114 @@
+﻿@model IEnumerable<safetool.Models.Device>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LocationID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Area)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeviceType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RiskLevel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Function)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SpecificFunction)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Operators)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastMaintenance)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmergencyStopImage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeSafetyDevice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FunctionSafetyDevice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Active)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LocationID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Area.ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeviceType.ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RiskLevel.ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Image)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Function)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SpecificFunction)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Operators)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastMaintenance)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmergencyStopImage)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TypeSafetyDevice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FunctionSafetyDevice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Active)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
