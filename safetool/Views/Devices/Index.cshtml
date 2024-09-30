@@ -2,7 +2,50 @@
 
 @{
     ViewData["Title"] = "Equipos";
+
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
+
+<style>
+
+    #card {
+        border: 3px solid var(--var-color-second);
+        box-sizing: border-box;
+        background: var(--var-color-main);
+        width: 400px;
+        height: 65px;
+    }
+
+        #card:hover {
+            background: var(--var-color-hover);
+        }
+
+    .form-select:focus {
+        box-shadow: 0 0 0 0.25rem var(--var-color-main);
+        border: none;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.25rem var(--var-color-main);
+        border: none;
+    }
+
+    .btn-custom {
+        font-weight: bold;
+        background-color: white;
+        border: 2px solid var(--var-color-hover);
+        width: auto;
+        height: auto;
+        border-radius: 5px;
+        margin: 0 5px;
+    }
+
+        .btn-custom:hover {
+            background-color: var(--var-color-hover);
+        }
+
+</style>
 
 <div class="mb-4 d-flex gap-5 align-items-center">
     <a asp-controller="Home" asp-action="Index" class="">
@@ -12,65 +55,59 @@
 </div>
 
 <!-- Filtros de Localidad y Área -->
-<form asp-action="Index" method="get" class="mb-4">
-    <div class="row g-3">
-        <div class="col-md-4">
-            <label for="LocationID" class="form-label">Localidad:</label>
-            <select id="locations" name="LocationID" class="form-select" asp-items="ViewBag.Locations">
-                <option value="" disabled selected>Selecciona una localidad</option>
-            </select>
+<div class="d-flex align-items-center mb-4">
+    <form asp-action="Index" method="get">
+        <div class="d-flex flex-row gap-4">
+            <div class="">
+                <label for="LocationID" class="form-label">Localidad:</label>
+                <select id="locations" name="LocationID" class="form-select" asp-items="ViewBag.Locations">
+                    <option value="" disabled selected>Selecciona una localidad</option>
+                </select>
+            </div>
+            <div class="">
+                <label for="AreaID" class="form-label">Área:</label>
+                <select id="areas" name="AreaID" class="form-select">
+                    <option value="">Selecciona el área</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
         </div>
-        <div class="col-md-4">
-            <label for="AreaID" class="form-label">Área:</label>
-            <select id="areas" name="AreaID" class="form-select">
-                <option value="">Selecciona el área</option>
-                <!-- Las áreas se llenarán dinámicamente basado en la localidad seleccionada -->
-            </select>
-        </div>
-        <div class="col-md-2 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary">Filtrar</button>
-        </div>
-    </div>
-</form>
+    </form>
+</div>
 
-@if (Model.Any())
-{
-    <div id="card__container" class="d-flex flex-row align-content-center justify-content-center gap-4 p-1 flex-wrap">
-        @foreach (var device in Model)
+<div class="w-100 d-flex justify-content-center mb-4">
+    <div style="width:980px;" class="d-flex flex-row align-content-center justify-content-center gap-4 p-1 flex-wrap">
+        @if (Model.Any())
         {
-            <a style="text-decoration: none;" class="d-flex pe-auto text-light fs-4" asp-action="Details" asp-route-id="@device.ID">
+            @foreach (var device in Model)
+            {
                 <div id="card" class="d-flex align-items-center px-3 rounded-pill shadow-sm justify-content-between">
-                    <div style="width: 480px;" class="d-flex flex-column gap-1">
-                        <div class="">
-                            <h2 id="card__title" class="order-2 overflow-hidden text-truncate text-nowrap fw-bold text-dark">@device.Name</h2>
+                    <a style="text-decoration: none;" class="text-light w-100" asp-action="Details" asp-route-id="@device.ID">
+                        <div class="d-flex flex-column w-100 gap-1">
+                            <div class="overflow-hidden text-nowrap fs-5 text-uppercase">
+                                <p>@device.Name</p>
+                            </div>
+                            <div class="d-flex align-items-center gap-5 px-2 fs-6">
+                                <p>@device.Model</p>
+                                <p>@device.Area.Name</p>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-between px-2">
-                            @* <p class="fs-6">@device.Model</p> *@
-                            <p class="fs-6">@device.Area.Location</p> <!-- Asumiendo que Location tiene la propiedad Name -->
-                            <p class="fs-6">@device.Area.Name</p> <!-- Asumiendo que Area tiene la propiedad Name -->
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center">
-                        <img id="card__icon" class="order-1 img-fluid" src="~/images/icons/Continental_Pictogram_Arrow_left_sRGB.png" alt="Arrow Icon" width="20"/>
-                    </div>
+                    </a>
                 </div>
-            </a>
+            }
+        }
+        else
+        {
+            <p class="text-warning fs-5 mb-5">No se encontraron dispositivos.</p>
         }
     </div>
-}
-else
-{
-    <p class="text-warning fs-3">No se encontraron dispositivos.</p>
-}
-
-
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
+</div>
 
 <a asp-controller="Devices" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" class="btn btn-primary @prevDisabled">Anterior</a>
 <a asp-controller="Devices" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" class="btn btn-primary @nextDisabled">Siguiente</a>
+
 
 @section Scripts {
     <script>

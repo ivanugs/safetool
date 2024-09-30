@@ -1,102 +1,327 @@
 ﻿@model safetool.Models.Device
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles";
 }
 
-<h1>Details</h1>
+<style>
+    span {
+        font-weight: 600;
+    }
 
-<div>
+    .light {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+
+    .red {
+        background-color: red;
+    }
+
+    .yellow {
+        background-color: yellow;
+    }
+
+    .green {
+        background-color: green;
+    }
+</style>
+
+<div class="mb-4 d-flex gap-5 align-items-center">
+    <a asp-action="Index">
+        <img src="/images/icons/arrow-left-solid.png" alt="Arrow Icon" width="30" />
+    </a>
+    <h1 class="fs-3">Detalles</h1>
+</div>
+
+<section class="d-flex flex-column justify-content-center align-items-center gap-3 w-100">
+    @*Seccion de informacion general*@
+    <div class="d-flex flex-column fs-6 mb-4 gap-4">
+        <p class="fs-5">@Model.Name</p>
+        <div class="d-flex flex-row">
+            <div class="me-5">
+                <img class="rounded" src="@Model.Image" alt="Device Image" width="250" />
+            </div>
+            <div class="d-flex flex-column justify-content-between p-1">
+                <p><span>Modelo:</span> @Model.Model</p>
+                <p><span>Área:</span> @Model.Area.Name</p>
+                <p><span>Tipo de equipo:</span> @Model.DeviceType</p>
+                <p><span>Función:</span> @Model.Function</p>
+                <p><span>Función específica:</span> @Model.SpecificFunction</p>
+                <p><span>Número de operadores:</span> @Model.Operators</p>
+                <p><span>Último mantenimiento:</span> @Model.LastMaintenance</p>
+            </div>
+        </div>
+        
+    </div>
+
+    @*Seccion de paro de emergencia*@
+    @if (!string.IsNullOrEmpty(Model.EmergencyStopImage))
+    {
+        <div class="d-flex flex-column justify-content-center align-items-center mb-4">
+            <div class="fs-5 mb-3" style="font-weight:600">
+                Paro de emergencia
+            </div>
+            <div>
+                <img class="rounded" src="@Model.EmergencyStopImage" alt="Emergency Stop Image" width="250" />
+            </div>
+        </div>
+    }
+
+    @*Seccion de dispositivo de seguridad*@
+    @if (!string.IsNullOrEmpty(Model.TypeSafetyDevice))
+    {
+        <div class="d-flex flex-column justify-content-center align-items-center mb-4">
+            <div class="fs-5 mb-3" style="font-weight:600">
+                Dispositivo de seguridad
+            </div>
+            <div class="d-flex flex-column justify-content-between p-1 fs-6 gap-2">
+                <p><span>Tipo de dispositivo:</span> @Model.TypeSafetyDevice</p>
+                <p><span>Función del dispositivo:</span> @Model.FunctionSafetyDevice</p>
+            </div>
+        </div>
+    }
+
+    @*Seccion de riesgos*@
+    <div class="d-flex flex-column justify-content-center align-items-center mb-4">
+        <div class="fs-5 mb-3" style="font-weight:600">
+            Riesgos de seguridad
+        </div>
+        <div class="d-flex flex-row">
+            @foreach (var risk in Model.Risks)
+            {
+                <div style="width: 150px;" class="d-flex flex-column align-items-center gap-2">
+                    <img class="rounded" src="@risk.Image" alt="@risk.Name" width="100"/>
+                    <p class="text-center fs-6">@risk.Name</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    @*Seccion de epp*@
+    <div class="d-flex flex-column justify-content-center align-items-center mb-4">
+        <div class="fs-5 mb-3" style="font-weight:600">
+            Equipo de protección personal necesario
+        </div>
+        <div class="d-flex flex-row">
+            @foreach (var ppe in Model.PPEs)
+            {
+                <div style="width: 150px;" class="d-flex flex-column align-items-center gap-2">
+                    <img class="rounded" src="@ppe.Image" alt="@ppe.Name" width="100" />
+                    <p class="text-center fs-6">@ppe.Name</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    @*Seccion de nievl de riesgo*@
+    <div class="d-flex flex-column mb-4 justify-content-center align-items-center">
+        <div class="fs-5 mb-2" style="font-weight:600">
+            Nivel de riesgo
+        </div>
+        <div class="">
+            <div class="d-flex flex-column gap-2 fs-6 p-1 justify-content-center align-items-center" style="width:fit-content">
+                @if (Model.RiskLevel.Level == "Alto")
+                {
+                    <div class="light red" title="Alto Riesgo"></div>
+                    <p>@Html.DisplayFor(model => model.RiskLevel.Level)</p>
+                }
+                @if (Model.RiskLevel.Level == "Medio")
+                {
+                    <div class="light yellow" title="Riesgo Moderado"></div>
+                    <p>@Html.DisplayFor(model => model.RiskLevel.Level)</p>
+                }
+                @if (Model.RiskLevel.Level == "Bajo")
+                {
+                    <div class="light green" title="Bajo Riesgo"></div>
+                    <p>@Html.DisplayFor(model => model.RiskLevel.Level)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    
+
+    @*Seccion de formulario*@
+    <div class="d-flex flex-column justify-content-center align-items-center mb-4">
+        <div class="card p-4 col-6">
+            <div class="p-6 text-center mb-4 fs-5" style="font-weight:600">
+                Completa los siguientes campos sí has leído y comprendido el análisis de riesgo
+            </div>
+            <div class="p-6 fs-6">
+                <form id="EmployeeForm" action="" method="post">
+                    <div class="mb-4">
+                        <label class="form-label" for="employee-number">Número de empleado<span class="text-warning">*</span>:</label>
+                        <input class="form-control" id="employee-number" aria-describedby="EmployeeNumberHelp" />
+                        <div id="EmployeeNumberHelp" class="form-text">Ingrese su número de empleado</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label" for="employee-name">Nombre completo<span class="text-warning">*</span>:</label>
+                        <input class="form-control" id="employee-name" aria-describedby="FullNameHelp" />
+                        <div id="FullNameHelp" class="form-text">Ingrese su nombre completo</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label" for="location">
+                            Lacalidad<span class="text-warning">*</span>:
+                        </label>
+                        <select class="form-control" id="location" disabled>
+                            <option value="location">@Model.Area.Location.Name</option>
+                        </select>
+                    </div>
+
+                    <div class="form-text text-wrap mb-4">
+                        Al enviar este formulario, usted confirma que ha comprendido el análisis de riesgo relacionado con la herramienta o maquinaria especificada.
+                        Este formulario NO constituye un permiso para el uso de dicho equipo y NO se considera una capacitación para su operación.
+                        Para cualquier duda o inquietud adicional, por favor diríjase al equipo de ESH local.
+                    </div>
+
+                    <div class="d-flex justify-content-center align-items-center">
+                        <button class="btn btn-warning text-dark fs-5" type="button" onclick="SendForm()">
+                            Enviar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="fs-6">
+    <a asp-action="Edit" asp-route-id="@Model?.ID">Editar</a>
+</div>
+
+@section Scripts {
+    <script>
+        function SendForm() {
+            event.preventDefault();
+            Swal.fire({
+                title: "Buen trabajo!",
+                text: "Se ha enviado el formulario!",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                document.getElementById('EmployeeForm').submit();
+            });
+        }
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* <div>
     <h4>Device</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.LocationID)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.LocationID)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Area)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Area.ID)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DeviceType)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.DeviceType.ID)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.RiskLevel)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.RiskLevel.ID)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Image)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Image)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Function)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Function)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.SpecificFunction)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.SpecificFunction)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Operators)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Operators)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.LastMaintenance)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.LastMaintenance)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.EmergencyStopImage)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.EmergencyStopImage)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.TypeSafetyDevice)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.TypeSafetyDevice)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.FunctionSafetyDevice)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.FunctionSafetyDevice)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Active)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Active)
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+</div> *@

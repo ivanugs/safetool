@@ -6,10 +6,6 @@
     --var-color-hover: #EB9800;
 }
 
-html {
-  font-size: 14px;
-}
-
 @media (min-width: 768px) {
   html {
     font-size: 16px;

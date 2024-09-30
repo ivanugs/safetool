@@ -64,7 +64,11 @@ namespace safetool.Controllers
                 .Include(d => d.Area)
                 .Include(d => d.DeviceType)
                 .Include(d => d.RiskLevel)
+                .Include(d => d.PPEs)
+                .Include(d => d.Risks)
+                .Include(d => d.Area.Location)
                 .FirstOrDefaultAsync(m => m.ID == id);
+
             if (device == null)
             {
                 return NotFound();
@@ -99,7 +103,7 @@ namespace safetool.Controllers
         // POST: Devices/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,LocationID,AreaID,DeviceTypeID,RiskLevelID,Image,Name,Function,SpecificFunction,Operators,LastMaintenance,EmergencyStopImage,TypeSafetyDevice,FunctionSafetyDevice,Active,ImageFile,ImageFileES")] Device device)
+        public async Task<IActionResult> Create([Bind("ID,LocationID,AreaID,DeviceTypeID,RiskLevelID,Image,Name,Model,Function,SpecificFunction,Operators,LastMaintenance,EmergencyStopImage,TypeSafetyDevice,FunctionSafetyDevice,Active,ImageFile,ImageFileES")] Device device)
         {
             if (ModelState.IsValid)
             {
@@ -268,18 +272,19 @@ namespace safetool.Controllers
             {
                 return NotFound();
             }
-            ViewData["AreaID"] = new SelectList(_context.Areas, "ID", "ID", device.AreaID);
-            ViewData["DeviceTypeID"] = new SelectList(_context.DeviceTypes, "ID", "ID", device.DeviceTypeID);
-            ViewData["RiskLevelID"] = new SelectList(_context.RiskLevels, "ID", "ID", device.RiskLevelID);
+            ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name");
+            ViewData["Areas"] = new SelectList(_context.Areas, "ID", "Name", device.AreaID);
+            ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes, "ID", "Name", device.DeviceTypeID);
+            ViewData["RiskLevels"] = new SelectList(_context.RiskLevels, "ID", "Level", device.RiskLevelID);
+            ViewData["PPES"] = new MultiSelectList(_context.PPEs, "ID", "Name");
+            ViewData["Risks"] = new MultiSelectList(_context.Risks, "ID", "Name");
             return View(device);
         }
 
         // POST: Devices/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,LocationID,AreaID,DeviceTypeID,RiskLevelID,Image,Name,Function,SpecificFunction,Operators,LastMaintenance,EmergencyStopImage,TypeSafetyDevice,FunctionSafetyDevice,Active")] Device device)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,LocationID,AreaID,DeviceTypeID,RiskLevelID,Image,Name,Model,Function,SpecificFunction,Operators,LastMaintenance,EmergencyStopImage,TypeSafetyDevice,FunctionSafetyDevice,Active")] Device device)
         {
             if (id != device.ID)
             {

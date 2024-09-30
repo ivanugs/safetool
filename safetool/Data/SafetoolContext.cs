@@ -148,6 +148,9 @@ namespace safetool.Data
                 entity.Property(e => e.Name)
                 .HasMaxLength(100);
 
+                entity.Property(e => e.Model)
+                .HasMaxLength(100);
+
                 entity.Property(e => e.Image)
                 .HasMaxLength(500);
 
