@@ -23,10 +23,10 @@
         </div>
         @if (User.Identity.IsAuthenticated)
         {
-            <div class="d-flex flex-column text-white fs-5 justify-content-center align-items-end">
+            <div class="d-flex flex-column text-white fs-6 justify-content-center align-items-end">
                 <p>@User.Identity.Name | </p>
                 <form asp-controller="Auth" asp-action="Logout" method="post">
-                    <button type="submit" class="btn btn-link text-white fs-5 p-0 m-0" style="text-decoration: none;"><i style="transform: rotate(180deg)" class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
+                    <button type="submit" class="btn btn-link text-white fs-6 p-0 m-0" style="text-decoration: none;"><i style="transform: rotate(180deg)" class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
                 </form>
             </div>
         }

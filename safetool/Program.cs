@@ -5,20 +5,42 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using safetool.Data;
 using safetool.Models;
+using safetool.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Configura la información de LDAP y Registro del servicio LDAP con los datos de conexión
+string ldapHost = "LDAP://cw01.contiwan.com";  // ad_host_1
+string ldapDomain = "@cw01.contiwan.com";      // ad_dominio_1
+builder.Services.AddTransient<LdapAuthentication>(provider =>
+    new LdapAuthentication(ldapHost, ldapDomain));
+
+// Registro del servicio de roles
+builder.Services.AddTransient<RoleService>();
+
+//Configuracion del middleware de autenticacion y autorizacion.
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Auth/Login";
+                    options.LogoutPath = "/Auth/Logout";
+                    options.AccessDeniedPath = "/Auth/AccessDenied";
+                });
+
+// Configuración de autorización
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+//        .RequireAuthenticatedUser()
+//        .Build();
+//});
+
 // Register DBContext <MS SQL SERVER>
 builder.Services.AddDbContext<SafetoolContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Register DBContext <MYSQL SERVER>
-//builder.Services.AddDbContext<SafetoolContext>(options =>
-//        options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.39-mysql")));
-
 
 var app = builder.Build();
 
@@ -26,15 +48,14 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

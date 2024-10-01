@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Pipelines;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using safetool.Data;
 using safetool.Models;
@@ -252,8 +254,8 @@ namespace safetool.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name");
-            ViewData["DeviceTypeID"] = new SelectList(_context.DeviceTypes, "ID", "Name", device.DeviceTypeID);
-            ViewData["RiskLevelID"] = new SelectList(_context.RiskLevels, "ID", "Level", device.RiskLevelID);
+            ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes, "ID", "Name", device.DeviceTypeID);
+            ViewData["RiskLevels"] = new SelectList(_context.RiskLevels, "ID", "Level", device.RiskLevelID);
             ViewData["PPES"] = new MultiSelectList(_context.PPEs, "ID", "Name");
             ViewData["Risks"] = new MultiSelectList(_context.Risks, "ID", "Name");
             return View(device);
@@ -267,35 +269,244 @@ namespace safetool.Controllers
                 return NotFound();
             }
 
-            var device = await _context.Devices.FindAsync(id);
+            // Incluir PPEs y Risks con el dispositivo
+            var device = await _context.Devices
+                .Include(d => d.PPEs)
+                .Include(d => d.Risks)
+                .FirstOrDefaultAsync(d => d.ID == id);
+
             if (device == null)
             {
                 return NotFound();
             }
-            ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name");
-            ViewData["Areas"] = new SelectList(_context.Areas, "ID", "Name", device.AreaID);
+
+            var selectedPPEs = device.PPEs.Select(p => p.ID).ToList();
+            ViewBag.PPES = new MultiSelectList(_context.PPEs, "ID", "Name", selectedPPEs);
+
+            var selectedRisks = device.Risks.Select(r => r.ID).ToList();
+            ViewBag.Risks = new MultiSelectList(_context.Risks, "ID", "Name", selectedRisks);
+
+            device.SelectedPPEs = selectedPPEs;
+            device.SelectedRisks = selectedRisks;
+
+            Console.WriteLine("PPEs seleccionados: " + string.Join(", ", device.PPEs.Select(p => p.ID)));
+            Console.WriteLine("Risks seleccionados: " + string.Join(", ", device.Risks.Select(r => r.ID)));
+
+            ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name", device.LocationID);
+            ViewData["Areas"] = new SelectList(_context.Areas.Where(a => a.LocationID == device.LocationID), "ID", "Name", device.AreaID);
             ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes, "ID", "Name", device.DeviceTypeID);
             ViewData["RiskLevels"] = new SelectList(_context.RiskLevels, "ID", "Level", device.RiskLevelID);
-            ViewData["PPES"] = new MultiSelectList(_context.PPEs, "ID", "Name");
-            ViewData["Risks"] = new MultiSelectList(_context.Risks, "ID", "Name");
+
             return View(device);
         }
+
 
         // POST: Devices/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,LocationID,AreaID,DeviceTypeID,RiskLevelID,Image,Name,Model,Function,SpecificFunction,Operators,LastMaintenance,EmergencyStopImage,TypeSafetyDevice,FunctionSafetyDevice,Active")] Device device)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,LocationID,AreaID,DeviceTypeID,RiskLevelID,Image,Name,Model,Function,SpecificFunction,Operators,LastMaintenance,EmergencyStopImage,TypeSafetyDevice,FunctionSafetyDevice,Active,ImageFile,ImageFileES")] Device device)
         {
             if (id != device.ID)
             {
                 return NotFound();
             }
 
+            var existingDevice = await _context.Devices
+                    .Include(d => d.PPEs) // Incluye la colección de PPEs
+                    .Include(d => d.Risks) // Incluye la colección de riesgos
+                    .FirstOrDefaultAsync(d => d.ID == id);
+            if (existingDevice == null)
+            {
+                return NotFound();
+            }
+
+            // Si no se sube foto nueva del equipo, conservar la que ya se tiene almacenada
+            if (device.ImageFile == null)
+            {
+                device.Image = existingDevice.Image; // Mantener la imagen existente
+            }
+            else
+            {
+                // Obtener la ruta de la imagen anterior que sera reemplazada
+                var oldImageDevicePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot" + existingDevice.Image);
+                // Logica para manejar la nueva imagen
+                string uploadsFolderDevice = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/devices/");
+                string uniqueFileNameDevice = Guid.NewGuid().ToString() + "_" + device.ImageFile.FileName;
+                string filePathDevice = Path.Combine(uploadsFolderDevice, uniqueFileNameDevice);
+
+                // Validar si la carpeta de imagenes de PPE existe
+                if (!Directory.Exists(uploadsFolderDevice))
+                {
+                    Directory.CreateDirectory(uploadsFolderDevice); // Si no existe la carpeta, la crea
+                }
+
+                // Guardar la nueva imagen
+                using (var fileStream = new FileStream(filePathDevice, FileMode.Create))
+                {
+                    await device.ImageFile.CopyToAsync(fileStream);
+                }
+
+
+                // Validar que exista la imagen que se reemplazara
+                if (System.IO.File.Exists(oldImageDevicePath))
+                {
+                    System.IO.File.Delete(oldImageDevicePath); // Si existe, elimina la imagen
+                }
+
+                // Actualizar la propiedad Image con la nueva ruta
+                device.Image = "/images/devices/" + uniqueFileNameDevice;
+            }
+
+            // Si no se sube foto nueva del paro de emergencia, conservar la que ya se tiene almacenada
+            if (device.ImageFileES == null)
+            {
+                device.EmergencyStopImage = existingDevice.EmergencyStopImage; // Mantener la imagen existente
+            }
+            else
+            {
+                // Obtener la ruta de la imagen anterior que sera reemplazada
+                var oldImageEmergencyStopPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot" + existingDevice.EmergencyStopImage);
+                // Logica para manejar la nueva imagen
+                string uploadsFolderEmergencyStop = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/emergency_stops/");
+                string uniqueFileNameEmergencyStop = Guid.NewGuid().ToString() + "_" + device.ImageFileES.FileName;
+                string filePathEmergencyStop = Path.Combine(uploadsFolderEmergencyStop, uniqueFileNameEmergencyStop);
+
+                // Validar si la carpeta de imagenes de PPE existe
+                if (!Directory.Exists(uploadsFolderEmergencyStop))
+                {
+                    Directory.CreateDirectory(uploadsFolderEmergencyStop); // Si no existe la carpeta, la crea
+                }
+
+                // Guardar la nueva imagen
+                using (var fileStream = new FileStream(filePathEmergencyStop, FileMode.Create))
+                {
+                    await device.ImageFileES.CopyToAsync(fileStream);
+                }
+
+
+                // Validar que exista la imagen que se reemplazara
+                if (System.IO.File.Exists(oldImageEmergencyStopPath))
+                {
+                    System.IO.File.Delete(oldImageEmergencyStopPath); // Si existe, elimina la imagen
+                }
+
+                // Actualizar la propiedad Image con la nueva ruta
+                device.EmergencyStopImage = "/images/emergency_stops/" + uniqueFileNameEmergencyStop;
+            }
+
+            // Recuperar las selecciones de PPEs y Risks desde el formulario
+            var selectedPPEs = Request.Form["SelectedPPEs"].ToArray();
+            var selectedRisks = Request.Form["SelectedRisks"].ToArray();
+
+            // Obtener los PPEs y Risks actuales del dispositivo
+            var currentPPEs = existingDevice.PPEs.ToList();
+            var currentRisks = existingDevice.Risks.ToList();
+
+            // Eliminar PPEs que no están seleccionados
+            foreach (var currentPPE in currentPPEs)
+            {
+                if (!selectedPPEs.Contains(currentPPE.ID.ToString()))
+                {
+                    Console.WriteLine($"Removing PPE with ID {currentPPE.ID} from Device.");
+                    existingDevice.PPEs.Remove(currentPPE);
+                }
+            }
+
+            // Agregar nuevos PPEs seleccionados
+            if (selectedPPEs != null)
+            {
+                Console.WriteLine($"Selected PPEs: {string.Join(", ", selectedPPEs)}");
+                foreach (var ppeId in selectedPPEs)
+                {
+
+                    if (int.TryParse(ppeId, out int parsedPPEId)) // Convertir ppeId a int
+                    {
+                        var ppe = await _context.PPEs.FindAsync(parsedPPEId);
+                        if (ppe != null && !existingDevice.PPEs.Contains(ppe))
+                        {
+                            Console.WriteLine($"Adding PPE with ID {parsedPPEId} to Device.");
+                            existingDevice.PPEs.Add(ppe);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"PPE with ID {parsedPPEId} not found or already added.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Invalid PPE ID: {ppeId}");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("No PPEs selected.");
+            }
+
+            // Eliminar Risks que no están seleccionados
+            foreach (var currentRisk in currentRisks)
+            {
+                if (!selectedRisks.Contains(currentRisk.ID.ToString()))
+                {
+                    Console.WriteLine($"Removing Risk with ID {currentRisk.ID} from Device.");
+                    existingDevice.Risks.Remove(currentRisk);
+                }
+            }
+
+            if (selectedRisks != null)
+            {
+                Console.WriteLine($"Selected Risks: {string.Join(", ", selectedRisks)}");
+                foreach (var riskId in selectedRisks)
+                {
+                    if (int.TryParse(riskId, out int parsedRiskId)) // Convertir riskId a int
+                    {
+                        var risk = await _context.Risks.FindAsync(parsedRiskId);
+                        if (risk != null && !existingDevice.Risks.Contains(risk))
+                        {
+                            Console.WriteLine($"Adding Risk with ID {parsedRiskId} to Device.");
+                            existingDevice.Risks.Add(risk);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Risk with ID {parsedRiskId} not found or already added.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Invalid Risk ID: {riskId}");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("No Risks selected.");
+            }
+
+            // Verifica la cantidad de PPEs y Risks asociados
+            Console.WriteLine($"Device has {device.PPEs.Count} PPEs and {device.Risks.Count} Risks.");
+
+            //Actualizar los campos
+            existingDevice.LocationID = device.LocationID;
+            existingDevice.AreaID = device.AreaID;
+            existingDevice.DeviceTypeID = device.DeviceTypeID;
+            existingDevice.RiskLevelID = device.RiskLevelID;
+            existingDevice.Image = device.Image;
+            existingDevice.Name = device.Name;
+            existingDevice.Model = device.Model;
+            existingDevice.Function = device.Function;
+            existingDevice.SpecificFunction = device.SpecificFunction;
+            existingDevice.Operators = device.Operators;
+            existingDevice.LastMaintenance = device.LastMaintenance;
+            existingDevice.EmergencyStopImage = device.EmergencyStopImage;
+            existingDevice.TypeSafetyDevice =  device.TypeSafetyDevice;
+            existingDevice.FunctionSafetyDevice = device.FunctionSafetyDevice;
+            existingDevice.Active = device.Active;
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(device);
+                    _context.Update(existingDevice);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -311,46 +522,13 @@ namespace safetool.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AreaID"] = new SelectList(_context.Areas, "ID", "ID", device.AreaID);
-            ViewData["DeviceTypeID"] = new SelectList(_context.DeviceTypes, "ID", "ID", device.DeviceTypeID);
-            ViewData["RiskLevelID"] = new SelectList(_context.RiskLevels, "ID", "ID", device.RiskLevelID);
-            return View(device);
-        }
 
-        // GET: Devices/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var device = await _context.Devices
-                .Include(d => d.Area)
-                .Include(d => d.DeviceType)
-                .Include(d => d.RiskLevel)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (device == null)
-            {
-                return NotFound();
-            }
+            ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name", device.LocationID);
+            ViewData["Areas"] = new SelectList(_context.Areas.Where(a => a.LocationID == device.LocationID), "ID", "Name", device.AreaID);
+            ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes, "ID", "Name", device.DeviceTypeID);
+            ViewData["RiskLevels"] = new SelectList(_context.RiskLevels, "ID", "Level", device.RiskLevelID);
 
             return View(device);
-        }
-
-        // POST: Devices/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var device = await _context.Devices.FindAsync(id);
-            if (device != null)
-            {
-                _context.Devices.Remove(device);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
 
         private bool DeviceExists(int id)

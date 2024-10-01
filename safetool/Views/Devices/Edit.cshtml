@@ -10,17 +10,17 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="mb-3">
                 <label asp-for="LocationID" class="form-label">Localidad:</label>
-                <select asp-for="LocationID" class="form-select" asp-items="ViewBag.Locations"></select>
+                <select asp-for="LocationID" class="form-select" id="locations" asp-items="ViewBag.Locations"></select>
                 <span asp-validation-for="LocationID" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="AreaID" class="form-label">Área:</label>
-                <select asp-for="AreaID" class="form-select" asp-items="ViewBag.Areas"></select>
+                <select asp-for="AreaID" class="form-select" id="areas" asp-items="ViewBag.Areas"></select>
                 <span asp-validation-for="AreaID" class="text-danger"></span>
             </div>
             <div class="mb-3">
@@ -47,6 +47,11 @@
                 <label asp-for="Name" class="form-label">Nombre del equipo:</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Model" class="form-label">Modelo del equipo:</label>
+                <input asp-for="Model" class="form-control" />
+                <span asp-validation-for="Model" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="Function" class="form-label">Función del equipo:</label>
@@ -89,14 +94,15 @@
                 <span asp-validation-for="FunctionSafetyDevice" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label asp-for="PPEs" class="form-label">Equipos de protección personal:</label>
-                <select asp-for="PPEs" class="form-select basic-multiple" asp-items="ViewBag.PPES" multiple>
+                <label asp-for="SelectedPPEs" class="form-label">Equipos de protección personal:</label>
+                <select asp-for="SelectedPPEs" class="form-select basic-multiple" asp-items="ViewBag.PPES" multiple>
                     <option value="" disabled>Selecciona los EPP</option>
                 </select>
             </div>
+
             <div class="mb-3">
-                <label asp-for="Risks" class="form-label">Riesgos:</label>
-                <select asp-for="Risks" class="form-select basic-multiple" asp-items="ViewBag.Risks" multiple>
+                <label asp-for="SelectedRisks" class="form-label">Riesgos:</label>
+                <select asp-for="SelectedRisks" class="form-select basic-multiple" asp-items="ViewBag.Risks" multiple>
                     <option value="" disabled>Selecciona los riesgos</option>
                 </select>
             </div>
@@ -122,6 +128,28 @@
         $(document).ready(function () {
             $('.basic-multiple').select2();
         });
+
+        document.getElementById('locations').addEventListener('change', function () {
+            var locationID = this.value;
+            var areasSelect = document.getElementById('areas');
+
+            // Limpiar las opciones anteriores
+            areasSelect.innerHTML = '<option value="" disabled selected>Selecciona el área</option>';
+
+            if (locationID) {
+                fetch(`/Devices/GetAreasByLocation?locationId=${locationID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(area => {
+                            var option = document.createElement('option');
+                            option.value = area.id;
+                            option.text = area.name;
+                            areasSelect.appendChild(option);
+                        });
+                    });
+            }
+        });
+
         // Mostrar la vista previa de la imagen del equipo
         function showPreview(event) {
             var input = event.target;
