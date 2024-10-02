@@ -2,20 +2,34 @@
     ViewData["Title"] = "Administración";
 }
 
-<h1 class="fs-4 mb-3">Administración general</h1>
+<style>
+    a {
+        color: var(--var-color-secondary)
+    }
+</style>
+
+<div class="mb-4 d-flex gap-5 align-items-center">
+    <a asp-controller="Home" asp-action="Index" class="">
+        <img src="/images/icons/house_icon.png" alt="Home Icon" width="30" />
+    </a>
+    <h1 class="fs-4">Administración general</h1>
+</div>
 
 <div class="">
     <div class="row gx-4">
-        <div class="col">
-            <div class="mb-3"><a style="text-decoration:none" class="" asp-controller="Locations" asp-action="Index">Administración de localidades</a></div>
-            <div class="mb-3"><a style="text-decoration:none" class="" asp-controller="Areas" asp-action="Index">Administración de áreas</a></div>
-            <div class="mb-3"><a style="text-decoration:none" class="" asp-controller="DeviceTypes" asp-action="Index">Administración de tipos de equipos</a></div>
-            <div class="mb-3"><a style="text-decoration:none" class="" asp-controller="PPEs" asp-action="Index">Administración de EPP</a></div>
-            <div class="mb-3"><a style="text-decoration:none" class="" asp-controller="Risks" asp-action="Index">Administración de riesgos de seguridad</a></div>
-            <div class="mb-3"><a style="text-decoration:none" class="" asp-controller="Devices" asp-action="Index">Administración de equipos</a></div>
+        <div class="col gap-5">
+            <div class="mb-3"><a asp-controller="Locations" asp-action="Index">Administración de localidades</a></div>
+            <div class="mb-3"><a asp-controller="Areas" asp-action="Index">Administración de áreas</a></div>
+            <div class="mb-3"><a asp-controller="DeviceTypes" asp-action="Index">Administración de tipos de equipos</a></div>
+            <div class="mb-3"><a asp-controller="PPEs" asp-action="Index">Administración de EPP</a></div>
+            <div class="mb-3"><a asp-controller="Risks" asp-action="Index">Administración de riesgos de seguridad</a></div>
+            <div class="mb-3"><a asp-controller="Devices" asp-action="List">Administración de equipos</a></div>
         </div>
-        <div class="col">
-            <div class="mb-3"><a style="text-decoration:none" class="" asp-controller="UserRoles" asp-action="Index">Administración de usuarios</a></div>
-        </div>
+        @if (User.IsInRole("Administrador"))
+        {
+            <div class="col">
+                <div class="mb-3"><a asp-controller="UserRoles" asp-action="Index">Administración de usuarios</a></div>
+            </div>
+        }
     </div>
 </div>

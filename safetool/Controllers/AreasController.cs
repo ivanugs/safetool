@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using safetool.Models;
 
 namespace safetool.Controllers
 {
+    [Authorize(Roles = "Administrador, Operador")]
     public class AreasController : Controller
     {
         private readonly SafetoolContext _context;
@@ -29,7 +31,7 @@ namespace safetool.Controllers
         // GET: Areas/Create
         public IActionResult Create()
         {
-            ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name");
+            ViewData["Locations"] = new SelectList(_context.Locations.Where(l => l.Active == true), "ID", "Name");
             return View();
         }
 
@@ -45,7 +47,7 @@ namespace safetool.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name", area.LocationID);
+            ViewData["Locations"] = new SelectList(_context.Locations.Where(l => l.Active == true), "ID", "Name", area.LocationID);
             return View(area);
         }
 
@@ -62,7 +64,7 @@ namespace safetool.Controllers
             {
                 return NotFound();
             }
-            ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name", area.LocationID);
+            ViewData["Locations"] = new SelectList(_context.Locations.Where(l => l.Active == true), "ID", "Name", area.LocationID);
             return View(area);
         }
 

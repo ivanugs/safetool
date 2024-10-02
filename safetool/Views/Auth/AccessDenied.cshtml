@@ -1,0 +1,58 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_AccessDeniedLayout.cshtml";
+    ViewData["Title"] = "Acceso Denegado";
+}
+
+<style>
+    body {
+        background-color: var(--var-color-main);
+    }
+
+    .container {
+        position: absolute;
+        right: 30px;
+    }
+
+    .message {
+        font-size: 40px;
+        color: white;
+        font-weight: 500;
+        position: absolute;
+        top: 430px;
+        left: 80px;
+    }
+
+    .message2 {
+        font-size: 28px;
+        color: white;
+        font-weight: 400;
+        width: 360px;
+        position: absolute;
+        top: 480px;
+        left: 80px;
+    }
+
+    .btn-back {
+        background-color: transparent;
+        border: 1px solid white;
+        font-size: 18px;
+        color: white;
+        font-weight: 400;
+        width: 150px;
+        height: 50px;
+        position: absolute;
+        top: 600px;
+        left: 80px;
+    }
+        .btn-back:hover{
+            background-color: var(--var-color-hover)
+        }
+</style>
+
+
+<div class="message">Acceso prohibido.</div>
+<div class="message2">Intentó accesar a una pagína en la que no tiene autorización.</div>
+<a asp-controller="Home" asp-action="Index"><button class="btn-back">Regresar a Inicio</button></a>
+
+

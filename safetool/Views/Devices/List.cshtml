@@ -11,107 +11,53 @@
     <h1 class="fs-5">Administración de equipos</h1>
 </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
+<p class="fs-6 mb-3">
+    <a asp-action="Create">Agregar registro</a>
 </p>
-<table class="table">
+
+<table class="table table-hover fs-6">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.LocationID)
+            <th scope="col">
+                #
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Area)
+            <th scope="col">
+                Nombre del equipo
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeviceType)
+            <th scope="col">
+                Modelo del equipo
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RiskLevel)
+            <th scope="col">
+                Último mantenimiento
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Image)
+            <th scope="col">
+                Activo?
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
+            <th scope="çol">
+                Acciones
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Function)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SpecificFunction)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Operators)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastMaintenance)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EmergencyStopImage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TypeSafetyDevice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FunctionSafetyDevice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Active)
-            </th>
-            <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="fs-6">
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LocationID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Area.ID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DeviceType.ID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RiskLevel.ID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Image)
-                </td>
+                <th scope="row">@Html.DisplayFor(modelItem => item.ID)</th>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Function)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SpecificFunction)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Operators)
+                    @Html.DisplayFor(modelItem => item.Model)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.LastMaintenance)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.EmergencyStopImage)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TypeSafetyDevice)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FunctionSafetyDevice)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Active)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Detalles</a> 
                 </td>
             </tr>
         }

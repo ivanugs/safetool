@@ -17,23 +17,28 @@
                 <select asp-for="LocationID" class="form-select" asp-items="ViewBag.Locations" id="locations">
                     <option value="" disabled selected>Selecciona una localidad</option>
                 </select>
+                <span asp-validation-for="LocationID" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="AreaID" class="form-label">Área:</label>
                 <select asp-for="AreaID" class ="form-select" id="areas"></select>
+                <span asp-validation-for="AreaID" class="text-danger"></span>
+
             </div>
             <div class="mb-3">
                 <label asp-for="DeviceTypeID" class="form-label">Tipo de equipo:</label>
                 <select asp-for="DeviceTypeID" class ="form-select" asp-items="ViewBag.DeviceTypes"></select>
+                <span asp-validation-for="DeviceTypeID" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="RiskLevelID" class="form-label">Nivel de riesgo del equipo:</label>
                 <select asp-for="RiskLevelID" class ="form-select" asp-items="ViewBag.RiskLevels"></select>
+                <span asp-validation-for="RiskLevelID" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="ImageFile" class="form-label">Imagen:</label>
-                <input asp-for="ImageFile" class="form-control" type="file" id="ImageFile" onchange="showPreview(event);" />
-                <span asp-validation-for="Image" class="text-danger"></span>
+                <input asp-for="ImageFile" class="form-control" type="file" id="ImageFile" onchange="showPreview(event);" accept=".jpg, .jpeg, .png"/>
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <img id="imagePreview" src="#" alt="Vista previa de la imagen" style="display:none; max-width: 200px;" />
@@ -70,7 +75,7 @@
             </div>
             <div class="mb-3">
                 <label asp-for="ImageFileES" class="form-label">Imagen del paro de emergencia: (Solo sí aplica)</label>
-                <input asp-for="ImageFileES" class="form-control" type="file" id="ImageFileES" onchange="showPreviewES(event);" />
+                <input asp-for="ImageFileES" class="form-control" type="file" id="ImageFileES" onchange="showPreviewES(event);" accept=".jpg, .jpeg, .png" />
                 <span asp-validation-for="ImageFileES" class="text-danger"></span>
             </div>
             <div class="mb-3">
@@ -91,12 +96,14 @@
                 <select asp-for="PPEs" class="form-select basic-multiple" asp-items="ViewBag.PPES" multiple>
                     <option value="" disabled>Selecciona los EPP</option>
                 </select>
+                <span asp-validation-for="PPEs" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="Risks" class="form-label">Riesgos:</label>
                 <select asp-for="Risks" class="form-select basic-multiple" asp-items="ViewBag.Risks" multiple>
                     <option value="" disabled>Selecciona los riesgos</option>
                 </select>
+                <span asp-validation-for="Risks" class="text-danger"></span>
             </div>
             <div class="mb-3 form-check">
                 <label class="form-check-label">
@@ -111,7 +118,7 @@
 </div>
 
 <div class="f-6">
-    <a asp-action="Index">Regresar al listado</a>
+    <a asp-action="List">Regresar al listado</a>
 </div>
 
 @section Scripts {

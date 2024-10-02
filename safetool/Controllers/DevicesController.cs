@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Pipelines;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -27,25 +28,27 @@ namespace safetool.Controllers
         public async Task<IActionResult> Index(int? locationID, int? areaID, int? pageIndex)
         {
             // Obtener la lista de localidades para el dropdown
-            ViewBag.Locations = new SelectList(_context.Locations, "ID", "Name");
+            ViewBag.Locations = new SelectList(_context.Locations.Where(l => l.Active == true), "ID", "Name");
             ViewBag.SelectedLocation = locationID;
 
             // Consultar los dispositivos incluyendo las relaciones de navegación
             IQueryable<Device> devices = _context.Devices
-                .Include(d => d.Area);     // Incluir la relación Area
+                .Include(d => d.Area)
+                .Where(a => a.Area.Active == true)
+                .Where(d => d.Active == true);     // Incluir la relación Area
 
             // Filtrar por localidad si está seleccionada
             if (locationID.HasValue)
             {
-                devices = devices.Where(d => d.LocationID == locationID.Value);
+                devices = devices.Where(a => a.Active == true).Where(d => d.LocationID == locationID.Value);
 
                 // Cargar las áreas correspondientes a la localidad seleccionada
-                ViewBag.Areas = new SelectList(_context.Areas.Where(a => a.LocationID == locationID.Value), "ID", "Name");
+                ViewBag.Areas = new SelectList(_context.Areas.Where(a => a.Active == true).Where(a => a.LocationID == locationID.Value), "ID", "Name");
 
                 // Si también se selecciona un área, aplicar el filtro
                 if (areaID.HasValue)
                 {
-                    devices = devices.Where(d => d.AreaID == areaID.Value);
+                    devices = devices.Where(d => d.Active == true).Where(d => d.AreaID == areaID.Value);
                 }
             }
 
@@ -53,6 +56,14 @@ namespace safetool.Controllers
             return View(await PaginatedList<Device>.CreateAsync(devices.AsNoTracking(), pageIndex ?? 1, pageSize));
         }
 
+        [Authorize(Roles = "Administrador, Operador")]
+        // GET: Devices/List
+        public async Task<IActionResult> List()
+        {
+            var device = await _context.Devices.ToListAsync();
+
+            return View(device);
+        }
 
         // GET: Devices/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -79,14 +90,16 @@ namespace safetool.Controllers
             return View(device);
         }
 
+
+        [Authorize(Roles = "Administrador, Operador")]
         // GET: Devices/Create
         public IActionResult Create()
         {
-            ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name");
-            ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes, "ID", "Name");
-            ViewData["RiskLevels"] = new SelectList(_context.RiskLevels, "ID", "Level");
-            ViewData["PPES"] = new MultiSelectList(_context.PPEs, "ID", "Name");
-            ViewData["Risks"] = new MultiSelectList(_context.Risks, "ID", "Name");
+            ViewData["Locations"] = new SelectList(_context.Locations.Where(a => a.Active == true), "ID", "Name");
+            ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes.Where(a => a.Active == true), "ID", "Name");
+            ViewData["RiskLevels"] = new SelectList(_context.RiskLevels.Where(a => a.Active == true), "ID", "Level");
+            ViewData["PPES"] = new MultiSelectList(_context.PPEs.Where(a => a.Active == true), "ID", "Name");
+            ViewData["Risks"] = new MultiSelectList(_context.Risks.Where(a => a.Active == true), "ID", "Name");
             return View();
         }
 
@@ -94,6 +107,7 @@ namespace safetool.Controllers
         public JsonResult GetAreasByLocation(int locationId)
         {
             var areas = _context.Areas
+                .Where(a => a.Active == true)
                 .Where(a => a.LocationID == locationId)
                 .Select(a => new { a.ID, a.Name })
                 .ToList();
@@ -101,7 +115,7 @@ namespace safetool.Controllers
             return Json(areas);
         }
 
-
+        [Authorize(Roles = "Administrador, Operador")]
         // POST: Devices/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -109,52 +123,72 @@ namespace safetool.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Verificar si el archivo ha sido recibido correctamente
-                if (device.ImageFile == null || device.ImageFile.Length == 0)
-                {
-                    ModelState.AddModelError("ImageFile", "Debe subir una imagen.");
-                    return View(device);
-                }
-
-                // Verificar si el archivo ha sido recibido correctamente
-                if (device.ImageFileES == null || device.ImageFileES.Length == 0)
-                {
-                    ModelState.AddModelError("ImageFile", "Debe subir una imagen.");
-                    return View(device);
-                }
-
                 string uniqueFileNameDevice = null;
                 string uniqueFileNameEmergencyStop = null;
 
-                if (device.ImageFile != null && device.ImageFileES != null)
+                // Manejar la imagen del equipo
+                if (device.ImageFile != null)
                 {
+                    // Validar si el archivo es una imagen valida
+                    var fileType = device.ImageFile.ContentType.ToLower();
+                    Console.WriteLine("Es de tipo: " + fileType);
+                    var allowedFileTypes = new[] { "image/jpeg", "image/png", "image/jpg" };
+
+                    if (!allowedFileTypes.Contains(fileType))
+                    {
+                        ModelState.AddModelError("ImageFile","Solo se permiten archivos con extensión .jpg, .jpeg o .png");
+                        return View(device);
+                    }
+                    else
+                    {
+                        // Obtener las rutas de las carpetas donde se almacenaran las imagenes de los equipos
+                        string uploadsFolderDevice = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/devices");
+
+                        // Crear el nombre unico para las imagenes
+                        uniqueFileNameDevice = Guid.NewGuid().ToString() + "_" + device.ImageFile.FileName;
+
+                        // Combinar para obtener la ruta completa del archivo
+                        string filePathDevice = Path.Combine(uploadsFolderDevice, uniqueFileNameDevice);
+
+                        // Validar que las carpetas existan
+                        if (!Directory.Exists(uploadsFolderDevice))
+                        {
+                            Directory.CreateDirectory(uploadsFolderDevice);
+                        }
+
+                        using (var fileStreamDevice = new FileStream(filePathDevice, FileMode.Create))
+                        {
+                            await device.ImageFile.CopyToAsync(fileStreamDevice);
+                        }
+                    }
+                }
+
+                // Manejar la imagen del paro de emergencias
+                if (device.ImageFileES != null)
+                {
+                    // Validar si el archivo es una imagen valida
+                    var fileType = device.ImageFileES.ContentType.ToLower();
+                    var allowedFileTypes = new[] { "image/jpeg", "image/png", "image/jpg" };
+
+                    if (!allowedFileTypes.Contains(fileType))
+                    {
+                        ModelState.AddModelError("ImageFileES", "Solo se permiten archivos con extensión .jpg, .jpeg o .png");
+                    }
+
                     // Obtener las rutas de las carpetas donde se almacenaran las imagenes de los equipos y paros de emergencia
-                    string uploadsFolderDevice = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/devices");
                     string uploadsFolderEmergencyStop = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/emergency_stops");
 
                     // Crear el nombre unico para las imagenes
-                    uniqueFileNameDevice = Guid.NewGuid().ToString() + "_" + device.ImageFile.FileName;
                     uniqueFileNameEmergencyStop = Guid.NewGuid().ToString() + "_" + device.ImageFileES.FileName;
 
                     // Combinar para obtener la ruta completa del archivo
-                    string filePathDevice = Path.Combine(uploadsFolderDevice, uniqueFileNameDevice);
                     string filePathEmergencyStop = Path.Combine(uploadsFolderEmergencyStop, uniqueFileNameEmergencyStop);
-
-                    // Validar que las carpetas existan
-                    if (!Directory.Exists(uploadsFolderDevice))
-                    {
-                        Directory.CreateDirectory(uploadsFolderDevice);
-                    }
 
                     if (!Directory.Exists(uploadsFolderEmergencyStop))
                     {
                         Directory.CreateDirectory(uploadsFolderEmergencyStop);
                     }
 
-                    using (var fileStreamDevice = new FileStream(filePathDevice, FileMode.Create))
-                    {
-                        await device.ImageFile.CopyToAsync(fileStreamDevice);
-                    }
 
                     using (var fileStreamEmergencyStop = new FileStream(filePathEmergencyStop, FileMode.Create))
                     {
@@ -234,33 +268,20 @@ namespace safetool.Controllers
                 {
                     Console.WriteLine("No Risks selected.");
                 }
-
-                // Verifica la cantidad de PPEs y Risks asociados
-                Console.WriteLine($"Device has {device.PPEs.Count} PPEs and {device.Risks.Count} Risks.");
-
-
-
                 // Guardar los datos del modelo en la base de datos
                 _context.Add(device);
                 var result = await _context.SaveChangesAsync();
-                Console.WriteLine($"SaveChanges result: {result}"); // Esto debería devolver el número de registros afectados
-
-                // Verificar el estado de las entidades
-                foreach (var entry in _context.ChangeTracker.Entries())
-                {
-                    Console.WriteLine($"Entity: {entry.Entity.GetType().Name}, State: {entry.State}");
-                }
-
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(List));
             }
-            ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name");
-            ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes, "ID", "Name", device.DeviceTypeID);
-            ViewData["RiskLevels"] = new SelectList(_context.RiskLevels, "ID", "Level", device.RiskLevelID);
-            ViewData["PPES"] = new MultiSelectList(_context.PPEs, "ID", "Name");
-            ViewData["Risks"] = new MultiSelectList(_context.Risks, "ID", "Name");
+            ViewData["Locations"] = new SelectList(_context.Locations.Where(a => a.Active == true), "ID", "Name");
+            ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes.Where(a => a.Active == true), "ID", "Name", device.DeviceTypeID);
+            ViewData["RiskLevels"] = new SelectList(_context.RiskLevels.Where(a => a.Active == true), "ID", "Level", device.RiskLevelID);
+            ViewData["PPES"] = new MultiSelectList(_context.PPEs.Where(a => a.Active == true), "ID", "Name");
+            ViewData["Risks"] = new MultiSelectList(_context.Risks.Where(a => a.Active == true), "ID", "Name");
             return View(device);
         }
 
+        [Authorize(Roles = "Administrador, Operador")]
         // GET: Devices/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -271,6 +292,7 @@ namespace safetool.Controllers
 
             // Incluir PPEs y Risks con el dispositivo
             var device = await _context.Devices
+                .Where(a => a.Active == true)
                 .Include(d => d.PPEs)
                 .Include(d => d.Risks)
                 .FirstOrDefaultAsync(d => d.ID == id);
@@ -280,27 +302,27 @@ namespace safetool.Controllers
                 return NotFound();
             }
 
-            var selectedPPEs = device.PPEs.Select(p => p.ID).ToList();
-            ViewBag.PPES = new MultiSelectList(_context.PPEs, "ID", "Name", selectedPPEs);
+            var selectedPPEs = device.PPEs.Where(a => a.Active == true).Select(p => p.ID).ToList();
+            ViewBag.PPES = new MultiSelectList(_context.PPEs.Where(a => a.Active == true), "ID", "Name", selectedPPEs);
 
-            var selectedRisks = device.Risks.Select(r => r.ID).ToList();
-            ViewBag.Risks = new MultiSelectList(_context.Risks, "ID", "Name", selectedRisks);
+            var selectedRisks = device.Risks.Where(a => a.Active == true).Select(r => r.ID).ToList();
+            ViewBag.Risks = new MultiSelectList(_context.Risks.Where(a => a.Active == true), "ID", "Name", selectedRisks);
 
             device.SelectedPPEs = selectedPPEs;
             device.SelectedRisks = selectedRisks;
 
-            Console.WriteLine("PPEs seleccionados: " + string.Join(", ", device.PPEs.Select(p => p.ID)));
-            Console.WriteLine("Risks seleccionados: " + string.Join(", ", device.Risks.Select(r => r.ID)));
+            Console.WriteLine("PPEs seleccionados: " + string.Join(", ", device.PPEs.Where(p => p.Active == true).Select(p => p.ID)));
+            Console.WriteLine("Risks seleccionados: " + string.Join(", ", device.Risks.Where(r => r.Active == true).Select(r => r.ID)));
 
-            ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name", device.LocationID);
-            ViewData["Areas"] = new SelectList(_context.Areas.Where(a => a.LocationID == device.LocationID), "ID", "Name", device.AreaID);
-            ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes, "ID", "Name", device.DeviceTypeID);
-            ViewData["RiskLevels"] = new SelectList(_context.RiskLevels, "ID", "Level", device.RiskLevelID);
+            ViewData["Locations"] = new SelectList(_context.Locations.Where(a => a.Active == true), "ID", "Name", device.LocationID);
+            ViewData["Areas"] = new SelectList(_context.Areas.Where(a => a.Active == true).Where(a => a.LocationID == device.LocationID), "ID", "Name", device.AreaID);
+            ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes.Where(a => a.Active == true), "ID", "Name", device.DeviceTypeID);
+            ViewData["RiskLevels"] = new SelectList(_context.RiskLevels.Where(a => a.Active == true), "ID", "Level", device.RiskLevelID);
 
             return View(device);
         }
 
-
+        [Authorize(Roles = "Administrador, Operador")]
         // POST: Devices/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -482,9 +504,6 @@ namespace safetool.Controllers
                 Console.WriteLine("No Risks selected.");
             }
 
-            // Verifica la cantidad de PPEs y Risks asociados
-            Console.WriteLine($"Device has {device.PPEs.Count} PPEs and {device.Risks.Count} Risks.");
-
             //Actualizar los campos
             existingDevice.LocationID = device.LocationID;
             existingDevice.AreaID = device.AreaID;
@@ -523,10 +542,10 @@ namespace safetool.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["Locations"] = new SelectList(_context.Locations, "ID", "Name", device.LocationID);
-            ViewData["Areas"] = new SelectList(_context.Areas.Where(a => a.LocationID == device.LocationID), "ID", "Name", device.AreaID);
-            ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes, "ID", "Name", device.DeviceTypeID);
-            ViewData["RiskLevels"] = new SelectList(_context.RiskLevels, "ID", "Level", device.RiskLevelID);
+            ViewData["Locations"] = new SelectList(_context.Locations.Where(a => a.Active == true), "ID", "Name", device.LocationID);
+            ViewData["Areas"] = new SelectList(_context.Areas.Where(a => a.Active == true).Where(a => a.LocationID == device.LocationID), "ID", "Name", device.AreaID);
+            ViewData["DeviceTypes"] = new SelectList(_context.DeviceTypes.Where(a => a.Active == true), "ID", "Name", device.DeviceTypeID);
+            ViewData["RiskLevels"] = new SelectList(_context.RiskLevels.Where(a => a.Active == true), "ID", "Level", device.RiskLevelID);
 
             return View(device);
         }

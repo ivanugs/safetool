@@ -32,7 +32,6 @@
     }
 
     .btn-custom {
-        font-weight: bold;
         background-color: white;
         border: 2px solid var(--var-color-hover);
         width: auto;
@@ -43,6 +42,10 @@
 
         .btn-custom:hover {
             background-color: var(--var-color-hover);
+        }
+
+        .btn:active, .btn:active:focus, .btn:focus{
+            box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--var-color-main);
         }
 
 </style>
@@ -58,20 +61,20 @@
 <div class="d-flex align-items-center mb-4">
     <form asp-action="Index" method="get">
         <div class="d-flex flex-row gap-4">
-            <div class="">
+            <div class="" style="min-width:300px;">
                 <label for="LocationID" class="form-label">Localidad:</label>
                 <select id="locations" name="LocationID" class="form-select" asp-items="ViewBag.Locations">
                     <option value="" disabled selected>Selecciona una localidad</option>
                 </select>
             </div>
-            <div class="">
+            <div class="" style="min-width:300px;">
                 <label for="AreaID" class="form-label">Área:</label>
                 <select id="areas" name="AreaID" class="form-select">
                     <option value="">Selecciona el área</option>
                 </select>
             </div>
             <div class="d-flex align-items-end">
-                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <button type="submit" class="btn btn-custom">Aplicar filtro</button>
             </div>
         </div>
     </form>
@@ -89,7 +92,7 @@
                             <div class="overflow-hidden text-nowrap fs-5 text-uppercase">
                                 <p>@device.Name</p>
                             </div>
-                            <div class="d-flex align-items-center gap-5 fs-6">
+                            <div class="d-flex align-items-center gap-5 fs-6 text-uppercase">
                                 <p>@device.Model</p>
                                 <p>@device.Area.Name</p>
                             </div>
@@ -105,9 +108,11 @@
     </div>
 </div>
 
-<a asp-controller="Devices" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" class="btn btn-primary @prevDisabled">Anterior</a>
-<a asp-controller="Devices" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" class="btn btn-primary @nextDisabled">Siguiente</a>
-
+@if (Model.Any())
+{
+    <a asp-controller="Devices" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" class="btn btn-custom @prevDisabled">Anterior</a>
+    <a asp-controller="Devices" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" class="btn btn-custom @nextDisabled">Siguiente</a>
+}
 
 @section Scripts {
     <script>

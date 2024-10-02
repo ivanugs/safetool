@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Pipelines;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using safetool.Models;
 
 namespace safetool.Controllers
 {
+    [Authorize(Roles = "Administrador, Operador")]
     public class RisksController : Controller
     {
         private readonly SafetoolContext _context;
