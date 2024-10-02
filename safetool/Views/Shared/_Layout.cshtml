@@ -28,8 +28,15 @@
                 <form asp-controller="Auth" asp-action="Logout" method="post">
                     <button type="submit" class="btn btn-link text-white fs-6 p-0 m-0" style="text-decoration: none;"><i style="transform: rotate(180deg)" class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
                 </form>
+                @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
+                {
+                    <div class="d-flex flex-column fs-6 justify-content-center">
+                        <a class="text-white" asp-controller="Admin" asp-action="Index" style="text-decoration: none;">Administrar</a>
+                    </div>
+                }
             </div>
         }
+        
     </header>
 
     <div class="">

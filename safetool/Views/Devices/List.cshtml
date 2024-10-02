@@ -4,7 +4,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="mb-4 d-flex gap-4 align-items-center">
+    <a asp-controller="Admin" asp-action="Index">
+        <img src="/images/icons/arrow-left-solid.png" alt="Arrow Icon" width="20" />
+    </a>
+    <h1 class="fs-5">Administración de equipos</h1>
+</div>
 
 <p>
     <a asp-action="Create">Create New</a>

@@ -4,7 +4,12 @@
     ViewData["Title"] = "Areas";
 }
 
-<h1 class="fs-5 mb-3">Administración de áreas</h1>
+<div class="mb-4 d-flex gap-4 align-items-center">
+    <a asp-controller="Admin" asp-action="Index">
+        <img src="/images/icons/arrow-left-solid.png" alt="Arrow Icon" width="20" />
+    </a>
+    <h1 class="fs-5">Administración de áreas</h1>
+</div>
 
 <p class="fs-6 mb-3">
     <a asp-action="Create">Agregar registro</a>
