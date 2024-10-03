@@ -19,6 +19,7 @@ namespace safetool.Data
         public DbSet<Risk> Risks { get; set; }
         public DbSet<RiskLevel> RiskLevels { get; set; }
         public DbSet<Device> Devices { get; set; }
+        public DbSet<FormSubmission> FormSubmissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -194,14 +195,28 @@ namespace safetool.Data
 
             });
 
+            modelBuilder.Entity<FormSubmission>(entity =>
+            {
+                entity.ToTable("FormSubmission");
+
+                entity.Property(e => e.ID)
+                .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.EmployeeNumber)
+                .HasMaxLength(8);
+
+                entity.Property(e => e.EmployeeName)
+                .HasMaxLength(100);
+
+                entity.HasOne(fs => fs.Device)
+                .WithMany(d => d.FormSubmissions)
+                .HasForeignKey(fs => fs.DeviceID)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+
             modelBuilder.Entity<Role>().HasData(
                 new Role { ID = 1, Name = "Administrador", Active = true },
                 new Role { ID = 2, Name = "Operador", Active = true }
-            );
-
-            modelBuilder.Entity<DeviceType>().HasData(
-                new DeviceType { ID = 1, Name = "Equipo de laboratorio", Active = true },
-                new DeviceType { ID = 2, Name = "Herramienta", Active = true }
             );
 
             modelBuilder.Entity<RiskLevel>().HasData(

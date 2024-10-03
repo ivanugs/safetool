@@ -11,8 +11,10 @@ namespace safetool.Models
 
         [Required(AllowEmptyStrings = true)]
         public int LocationID { get; set; } //Foreign key property
+
         [Required]
         public string? Name { get; set; }
+
         [Required]
         public bool Active { get; set; }
 

@@ -37,7 +37,8 @@
             </div>
             <div class="mb-3">
                 <label asp-for="ImageFile" class="form-label">Imagen:</label>
-                <input asp-for="ImageFile" class="form-control" type="file" id="ImageFile" onchange="showPreview(event);" accept=".jpg, .jpeg, .png"/>
+                <input asp-for="ImageFile" class="form-control" type="file" id="ImageFile" onchange="showPreview(event);" accept=".jpg, .jpeg, .png" aria-describedby="imagenHelp"/>
+                <div id="imagenHelp" class="form-text">Por favor, solo ingrese imagenes con extension .jpg, .jpeg, .png.</div>
                 <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="mb-3">
@@ -75,7 +76,8 @@
             </div>
             <div class="mb-3">
                 <label asp-for="ImageFileES" class="form-label">Imagen del paro de emergencia: (Solo sí aplica)</label>
-                <input asp-for="ImageFileES" class="form-control" type="file" id="ImageFileES" onchange="showPreviewES(event);" accept=".jpg, .jpeg, .png" />
+                <input asp-for="ImageFileES" class="form-control" type="file" id="ImageFileES" onchange="showPreviewES(event);" accept=".jpg, .jpeg, .png" aria-describedby="imagenESHelp"/>
+                <div id="imagenESHelp" class="form-text">Por favor, solo ingrese imagenes con extension .jpg, .jpeg, .png.</div>
                 <span asp-validation-for="ImageFileES" class="text-danger"></span>
             </div>
             <div class="mb-3">

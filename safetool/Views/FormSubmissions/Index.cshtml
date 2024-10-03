@@ -1,0 +1,65 @@
+﻿@model IEnumerable<safetool.Models.FormSubmission>
+
+@{
+    ViewData["Title"] = "Registros";
+}
+
+<div class="mb-4 d-flex gap-4 align-items-center">
+    <a asp-controller="Admin" asp-action="Index">
+        <img src="/images/icons/arrow-left-solid.png" alt="Arrow Icon" width="20" />
+    </a>
+    <h1 class="fs-5">Administración de registros de usuarios</h1>
+</div>
+
+<table class="table table-hover fs-6">
+    <thead>
+        <tr>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.EmployeeNumber)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.EmployeeName)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.Device.Area.Location)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.Device.Area)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.Device.Model)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody class="fs-6">
+        @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmployeeNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmployeeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Device.Area.Location)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Device.Area)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Device.Model)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

@@ -141,30 +141,32 @@
         </div>
     </div>
 
-    
-
     @*Seccion de formulario*@
     <div class="d-flex flex-column justify-content-center align-items-center mb-4">
         <div class="card p-4 col-6">
             <div class="p-6 text-center mb-4 fs-5" style="font-weight:600">
                 Completa los siguientes campos sí has leído y comprendido el análisis de riesgo
+                <!-- Mostrar el valor de Model.ID para asegurarse de que está siendo pasado correctamente -->
+                <p>Device ID: @Model.ID</p>
+
             </div>
             <div class="p-6 fs-6">
-                <form id="EmployeeForm" action="" method="post">
+                <form id="EmployeeForm" asp-action="Create" asp-controller="FormSubmissions" method="post">
+                    <input type="hidden" name="ID" value="@Model.ID" />
                     <div class="mb-4">
-                        <label class="form-label" for="employee-number">Número de empleado<span class="text-warning">*</span>:</label>
-                        <input class="form-control" id="employee-number" aria-describedby="EmployeeNumberHelp" />
+                        <label class="form-label" for="EmployeeNumber">Número de empleado<span class="text-warning">*</span>:</label>
+                        <input class="form-control" id="EmployeeNumber" aria-describedby="EmployeeNumberHelp" required/>
                         <div id="EmployeeNumberHelp" class="form-text">Ingrese su número de empleado</div>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label" for="employee-name">Nombre completo<span class="text-warning">*</span>:</label>
-                        <input class="form-control" id="employee-name" aria-describedby="FullNameHelp" />
+                        <label class="form-label" for="EmployeeName">Nombre completo<span class="text-warning">*</span>:</label>
+                        <input class="form-control" id="EmployeeName" aria-describedby="FullNameHelp" required/>
                         <div id="FullNameHelp" class="form-text">Ingrese su nombre completo</div>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label" for="location">
+                        <label class="form-label" for="">
                             Lacalidad<span class="text-warning">*</span>:
                         </label>
                         <select class="form-control" id="location" disabled>

@@ -131,7 +131,6 @@ namespace safetool.Controllers
                 {
                     // Validar si el archivo es una imagen valida
                     var fileType = device.ImageFile.ContentType.ToLower();
-                    Console.WriteLine("Es de tipo: " + fileType);
                     var allowedFileTypes = new[] { "image/jpeg", "image/png", "image/jpg" };
 
                     if (!allowedFileTypes.Contains(fileType))
@@ -173,26 +172,29 @@ namespace safetool.Controllers
                     if (!allowedFileTypes.Contains(fileType))
                     {
                         ModelState.AddModelError("ImageFileES", "Solo se permiten archivos con extensión .jpg, .jpeg o .png");
+                        return View(device);
                     }
-
-                    // Obtener las rutas de las carpetas donde se almacenaran las imagenes de los equipos y paros de emergencia
-                    string uploadsFolderEmergencyStop = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/emergency_stops");
-
-                    // Crear el nombre unico para las imagenes
-                    uniqueFileNameEmergencyStop = Guid.NewGuid().ToString() + "_" + device.ImageFileES.FileName;
-
-                    // Combinar para obtener la ruta completa del archivo
-                    string filePathEmergencyStop = Path.Combine(uploadsFolderEmergencyStop, uniqueFileNameEmergencyStop);
-
-                    if (!Directory.Exists(uploadsFolderEmergencyStop))
+                    else
                     {
-                        Directory.CreateDirectory(uploadsFolderEmergencyStop);
-                    }
+                        // Obtener las rutas de las carpetas donde se almacenaran las imagenes de los equipos y paros de emergencia
+                        string uploadsFolderEmergencyStop = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/emergency_stops");
+
+                        // Crear el nombre unico para las imagenes
+                        uniqueFileNameEmergencyStop = Guid.NewGuid().ToString() + "_" + device.ImageFileES.FileName;
+
+                        // Combinar para obtener la ruta completa del archivo
+                        string filePathEmergencyStop = Path.Combine(uploadsFolderEmergencyStop, uniqueFileNameEmergencyStop);
+
+                        if (!Directory.Exists(uploadsFolderEmergencyStop))
+                        {
+                            Directory.CreateDirectory(uploadsFolderEmergencyStop);
+                        }
 
 
-                    using (var fileStreamEmergencyStop = new FileStream(filePathEmergencyStop, FileMode.Create))
-                    {
-                        await device.ImageFileES.CopyToAsync(fileStreamEmergencyStop);
+                        using (var fileStreamEmergencyStop = new FileStream(filePathEmergencyStop, FileMode.Create))
+                        {
+                            await device.ImageFileES.CopyToAsync(fileStreamEmergencyStop);
+                        }
                     }
                 }
 
@@ -292,7 +294,6 @@ namespace safetool.Controllers
 
             // Incluir PPEs y Risks con el dispositivo
             var device = await _context.Devices
-                .Where(a => a.Active == true)
                 .Include(d => d.PPEs)
                 .Include(d => d.Risks)
                 .FirstOrDefaultAsync(d => d.ID == id);
@@ -539,7 +540,7 @@ namespace safetool.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(List));
             }
 
             ViewData["Locations"] = new SelectList(_context.Locations.Where(a => a.Active == true), "ID", "Name", device.LocationID);

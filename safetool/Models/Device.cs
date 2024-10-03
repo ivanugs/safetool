@@ -78,5 +78,7 @@ namespace safetool.Models
         [Required(ErrorMessage = "Debe seleccionar uno o más riesgos.")]
         public List<int> SelectedRisks { get; set; } = new List<int>();
 
+        public ICollection<FormSubmission>? FormSubmissions { get; set; }
+
     }
 }

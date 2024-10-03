@@ -30,13 +30,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                     options.AccessDeniedPath = "/Auth/AccessDenied";
                 });
 
-// Configuración de autorización
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-//        .RequireAuthenticatedUser()
-//        .Build();
-//});
+//Configuración de autorización
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 
 // Register DBContext <MS SQL SERVER>
 builder.Services.AddDbContext<SafetoolContext>(options =>
