@@ -20,62 +20,75 @@ namespace safetool.Controllers
         }
 
         // GET: FormSubmissions
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var safetoolContext = _context.FormSubmissions.Include(f => f.Device);
-            return View(await safetoolContext.ToListAsync());
-        }
+            ViewData["NumberSortParm"] = string.IsNullOrEmpty(sortOrder) ? "number_desc" : "";
+            ViewData["LocationSortParm"] = sortOrder == "Location" ? "location_desc" : "Location";
+            ViewData["AreaSortParm"] = sortOrder == "Area" ? "area_desc" : "Area";
 
-        // GET: FormSubmissions/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var formSubmission = await _context.FormSubmissions
+            var submissions = from s in _context.FormSubmissions
                 .Include(f => f.Device)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (formSubmission == null)
+                .Include(f => f.Device.Area)
+                .Include(f => f.Device.Area.Location)
+                select s;
+
+            switch (sortOrder)
             {
-                return NotFound();
+                case "number_desc":
+                    submissions = submissions.OrderByDescending(s => s.EmployeeNumber);
+                    break;
+                case "Location":
+                    submissions = submissions.OrderBy(s => s.Device.Area.Location.Name);
+                    break;
+                case "location_desc":
+                    submissions = submissions.OrderByDescending(s => s.Device.Area.Location.Name);
+                    break;
+                case "Area":
+                    submissions = submissions.OrderBy(s => s.Device.Area.Name);
+                    break;
+                case "area_desc":
+                    submissions = submissions.OrderByDescending(s => s.Device.Area.Name);
+                    break;
+                default:
+                    submissions = submissions.OrderBy(s => s.EmployeeNumber);
+                    break;
             }
 
-            return View(formSubmission);
+            return View(await submissions.AsNoTracking().ToListAsync());
         }
 
         // POST: FormSubmissions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int ID, [Bind("EmployeeNumber,EmployeeName,DeviceID,CreatedAt")] FormSubmission formSubmission)
+        public async Task<IActionResult> Create(int deviceID, string employeeNumber, string employeeName, FormSubmission formSubmission)
         {
-            var device = await _context.Devices.FindAsync(ID);
+            var device = await _context.Devices.FindAsync(deviceID);
             if (device == null)
             {
                 ModelState.AddModelError("", "El dispositivo no existe.");
-                return RedirectToAction("Details", "Devices", new { id = ID });
+                return RedirectToAction("Details", "Devices", new { id = deviceID });
             }
 
             if (ModelState.IsValid)
             {
                 // Asignar el DeviceID al formSubmission
-                formSubmission.DeviceID = ID;
-                formSubmission.CreatedAt = DateTime.UtcNow;
+                formSubmission.DeviceID = deviceID;
+                formSubmission.EmployeeNumber = employeeNumber;
+                formSubmission.EmployeeName = employeeName;
+                formSubmission.CreatedAt = DateTime.Now;
 
                 // Guardar en la base de datos
                 _context.Add(formSubmission);
                 await _context.SaveChangesAsync();
 
                 // Redirigir de vuelta a la vista de detalles del dispositivo
-                return RedirectToAction("Details", "Devices", new { id = ID });
+                return RedirectToAction("Index", "Devices");
             }
 
+            Console.WriteLine("No es valido");
+
             // Si hay un error, regresar a la vista de detalles del dispositivo
-            return RedirectToAction("Details", "Devices", new { id = ID });
+            return RedirectToAction("Details", "Devices", new { id = deviceID });
         }
-
-
-
     }
 }

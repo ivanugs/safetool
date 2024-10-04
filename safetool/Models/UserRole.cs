@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace safetool.Models
 {
     // Dependent (Parent Role)
     public class UserRole
     {
+        [Key]
         public int ID { get; set; }
         public required string UserName { get; set; }
         public int RoleID { get; set; } // Foreign key property

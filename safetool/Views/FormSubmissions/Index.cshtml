@@ -15,24 +15,23 @@
     <thead>
         <tr>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.EmployeeNumber)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NumberSortParm"]">Número de empleado</a>
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.EmployeeName)
+                Nombre del empleado
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.Device.Area.Location)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["LocationSortParm"]">Localidad</a>
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.Device.Area)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["AreaSortParm"]">Áreas</a>
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.Device.Model)
+                Modelo del equipo
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.CreatedAt)
+                Creado
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody class="fs-6">
@@ -45,19 +44,16 @@
                 @Html.DisplayFor(modelItem => item.EmployeeName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Device.Area.Location)
+                @Html.DisplayFor(modelItem => item.Device.Area.Location.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Device.Area)
+                @Html.DisplayFor(modelItem => item.Device.Area.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Device.Model)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a>
             </td>
         </tr>
         }

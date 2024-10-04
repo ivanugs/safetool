@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace safetool.Models
 {
     public class Risk
     {
+        [Key]
         public int ID { get; set; }
         public required string Name { get; set; }
         public string? Image { get; set; }

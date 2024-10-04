@@ -10,6 +10,7 @@ namespace safetool.Models
     //Dependent
     public class Device
     {
+        [Key]
         public int ID { get; set; }
 
         [Required(ErrorMessage = "Debe seleccionar una localidad.")]

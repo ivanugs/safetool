@@ -29,8 +29,8 @@ namespace safetool.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EmployeeNumber = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: true),
-                    EmployeeName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    EmployeeNumber = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    EmployeeName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DeviceID = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

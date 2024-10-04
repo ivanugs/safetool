@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace safetool.Models
 {
     // Principal
     public class DeviceType
     {
+        [Key]
         public int ID { get; set; }
         public required string Name { get; set; }
         public bool Active { get; set; }

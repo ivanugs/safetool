@@ -7,6 +7,7 @@ namespace safetool.Models
     //Dependent
     public class Area
     {
+        [Key]
         public int ID { get; set; }
 
         [Required(AllowEmptyStrings = true)]
