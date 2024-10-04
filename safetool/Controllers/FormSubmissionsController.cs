@@ -20,17 +20,36 @@ namespace safetool.Controllers
         }
 
         // GET: FormSubmissions
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["NumberSortParm"] = string.IsNullOrEmpty(sortOrder) ? "number_desc" : "";
             ViewData["LocationSortParm"] = sortOrder == "Location" ? "location_desc" : "Location";
             ViewData["AreaSortParm"] = sortOrder == "Area" ? "area_desc" : "Area";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
 
             var submissions = from s in _context.FormSubmissions
                 .Include(f => f.Device)
                 .Include(f => f.Device.Area)
                 .Include(f => f.Device.Area.Location)
                 select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                submissions = submissions.Where(s => s.EmployeeNumber.Contains(searchString)
+                                          || s.EmployeeName.Contains(searchString)
+                                          || s.Device.Model.Contains(searchString));
+            }
 
             switch (sortOrder)
             {
@@ -54,7 +73,8 @@ namespace safetool.Controllers
                     break;
             }
 
-            return View(await submissions.AsNoTracking().ToListAsync());
+            int pageSize = 20;
+            return View(await PaginatedList<FormSubmission>.CreateAsync(submissions.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // POST: FormSubmissions/Create

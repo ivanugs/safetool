@@ -17,21 +17,8 @@ public class PaginatedList<T> : List<T>
         this.AddRange(items);
     }
 
-    public bool HasPreviousPage
-    {
-        get
-        {
-            return (PageIndex > 1);
-        }
-    }
-
-    public bool HasNextPage
-    {
-        get
-        {
-            return (PageIndex < TotalPages);
-        }
-    }
+    public bool HasPreviousPage => PageIndex > 1;
+    public bool HasNextPage => PageIndex < TotalPages;
 
     public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
     {
