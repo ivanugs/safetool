@@ -4,6 +4,16 @@
     ViewData["Title"] = "Creación";
 }
 
+<style>
+    a {
+        color: var(--var-color-secondary)
+    }
+
+        a:hover {
+            color: var(--var-color-main)
+        }
+</style>
+
 <h1 class="fs-5 mb-3">Administración de localidades</h1>
 
 <h4>Crear nueva localidad</h4>
@@ -27,7 +37,7 @@
                     <input class="form-check-input" asp-for="Active" /> Activo?
                 </label>
             </div>
-            <button type="submit" value="Create" class="btn btn-primary">Crear</button>
+            <button type="submit" value="Create" class="btn btn-custom">Crear</button>
         </form>
     </div>
 </div>

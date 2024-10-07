@@ -4,6 +4,15 @@
     ViewData["Title"] = "Edicion";
 }
 
+<style>
+    a {
+        color: var(--var-color-secondary)
+    }
+        a:hover {
+            color: var(--var-color-main)
+        }
+</style>
+
 <h1 class="fs-5 mb-3">Administración de localidades</h1>
 
 <h4>Editar localidad</h4>
@@ -28,7 +37,7 @@
                     <input class="form-check-input" asp-for="Active" /> Activo?
                 </label>
             </div>
-             <button type="submit" value="Save" class="btn btn-primary">Guardar</button>
+             <button type="submit" value="Save" class="btn btn-custom">Guardar</button>
         </form>
     </div>
 </div>
