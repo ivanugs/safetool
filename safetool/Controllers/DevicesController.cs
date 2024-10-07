@@ -32,10 +32,9 @@ namespace safetool.Controllers
             ViewBag.SelectedLocation = locationID;
 
             // Consultar los dispositivos incluyendo las relaciones de navegación
-            IQueryable<Device> devices = _context.Devices
+            IQueryable<Device> devices = _context.Devices.Where(d => d.Active == true)
                 .Include(d => d.Area)
-                .Where(a => a.Area.Active == true)
-                .Where(d => d.Active == true);     // Incluir la relación Area
+                .Where(a => a.Area.Active == true);
 
             // Filtrar por localidad si está seleccionada
             if (locationID.HasValue)
