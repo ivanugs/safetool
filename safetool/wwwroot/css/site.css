@@ -30,3 +30,37 @@ body {
         padding: 2rem 15rem;
     }
 }
+
+.form-select:focus {
+    box-shadow: 0 0 0 0.25rem var(--var-color-main);
+    border: none;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem var(--var-color-main);
+    border: none;
+}
+
+.btn-custom {
+    background-color: white;
+    border: 2px solid var(--var-color-main);
+    width: auto;
+    height: auto;
+    border-radius: 5px;
+    /*margin: 0 5px;*/
+}
+
+.btn-custom:hover {
+    background-color: var(--var-color-main);
+    color: white;
+}
+
+.btn:active, .btn:active:focus, .btn:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--var-color-main);
+}
+
+.form-check-input:checked, .form-check-input:focus {
+    background-color: var(--var-color-main);
+    border: none;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--var-color-main);
+}
