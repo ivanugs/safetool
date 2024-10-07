@@ -19,7 +19,7 @@
     <h1 class="fs-4">Administración general</h1>
 </div>
 
-<div class="">
+<div class="d-flex flex-column">
     <div class="row gx-4">
         <div class="col gap-5">
             <div class="mb-3"><a asp-controller="Locations" asp-action="Index">Administración de localidades</a></div>
@@ -35,5 +35,11 @@
                 <div class="mb-3"><a asp-controller="UserRoles" asp-action="Index">Administración de usuarios</a></div>
             </div>
         }
+    </div>
+    <div class="row gx-4 mt-5">
+        <p style="font-weight:600" class="fs-4 mb-3">Registros de usuarios</p>
+        <div class="col gap-5">
+            <div class="mb-3"><a asp-controller="FormSubmissions" asp-action="Index">Administración de registros de usuarios</a></div>
+        </div>
     </div>
 </div>
