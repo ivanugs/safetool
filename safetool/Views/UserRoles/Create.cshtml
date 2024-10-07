@@ -4,6 +4,16 @@
     ViewData["Title"] = "Creación";
 }
 
+<style>
+    a {
+        color: var(--var-color-secondary)
+    }
+
+        a:hover {
+            color: var(--var-color-main)
+        }
+</style>
+
 <h1 class="fs-5 mb-3">Administración de usuarios</h1>
 
 <h4>Crear nuevo usuario</h4>
@@ -22,7 +32,7 @@
                 <select asp-for="RoleID" class ="form-select" asp-items="ViewBag.Roles"></select>
             </div>
             <div class="mb-3">
-                <input type="submit" value="Crear" class="btn btn-primary" />
+                <input type="submit" value="Crear" class="btn btn-custom" />
             </div>
         </form>
     </div>
