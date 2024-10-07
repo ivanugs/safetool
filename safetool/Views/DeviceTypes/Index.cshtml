@@ -4,6 +4,15 @@
     ViewData["Title"] = "Tipos de equipo";
 }
 
+<style>
+    a {
+        color: var(--var-color-secondary)
+    }
+        a:hover {
+            color: var(--var-color-main)
+        }
+</style>
+
 <div class="mb-4 d-flex gap-4 align-items-center">
     <a asp-controller="Admin" asp-action="Index">
         <img src="/images/icons/arrow-left-solid.png" alt="Arrow Icon" width="20" />
@@ -44,8 +53,6 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Editar</a>
-                @* <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a> *@
             </td>
         </tr>
 }
