@@ -82,6 +82,23 @@ namespace safetool.Controllers
             {
                 try
                 {
+                    // Obtener el área existente antes de la actualización
+                    var existingArea = await _context.Areas.AsNoTracking().FirstOrDefaultAsync(a => a.ID == id);
+
+                    // Verificar si el LocationID ha cambiado
+                    if (existingArea.LocationID != area.LocationID)
+                    {
+                        // Actualizar la localidad de todos los dispositivos que están asociados con esta área
+                        var devices = _context.Devices.Where(d => d.AreaID == area.ID);
+                        foreach (var device in devices)
+                        {
+                            device.LocationID = area.LocationID;
+                        }
+
+                        // Guardar los cambios en los dispositivos
+                        _context.UpdateRange(devices);
+                    }
+
                     _context.Update(area);
                     await _context.SaveChangesAsync();
                 }

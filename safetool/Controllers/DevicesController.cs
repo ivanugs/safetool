@@ -32,14 +32,16 @@ namespace safetool.Controllers
             ViewBag.SelectedLocation = locationID;
 
             // Consultar los dispositivos incluyendo las relaciones de navegación
-            IQueryable<Device> devices = _context.Devices.Where(d => d.Active == true)
+            IQueryable<Device> devices = _context.Devices
                 .Include(d => d.Area)
-                .Where(a => a.Area.Active == true);
+                .Where(d => d.Area.Location.Active == true)
+                .Where(d => d.Area.Active == true)
+                .Where(d => d.Active == true);
 
             // Filtrar por localidad si está seleccionada
             if (locationID.HasValue)
             {
-                devices = devices.Where(a => a.Active == true).Where(d => d.LocationID == locationID.Value);
+                devices = devices.Where(a => a.Active == true).Where(d => d.Area.Active == true).Where(d => d.LocationID == locationID.Value);
 
                 // Cargar las áreas correspondientes a la localidad seleccionada
                 ViewBag.Areas = new SelectList(_context.Areas.Where(a => a.Active == true).Where(a => a.LocationID == locationID.Value), "ID", "Name");
@@ -47,7 +49,7 @@ namespace safetool.Controllers
                 // Si también se selecciona un área, aplicar el filtro
                 if (areaID.HasValue)
                 {
-                    devices = devices.Where(d => d.Active == true).Where(d => d.AreaID == areaID.Value);
+                    devices = devices.Where(d => d.Active == true).Where(d => d.Area.Active == true).Where(d => d.AreaID == areaID.Value);
                 }
             }
 
