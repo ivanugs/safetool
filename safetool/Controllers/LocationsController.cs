@@ -22,9 +22,42 @@ namespace safetool.Controllers
         }
 
         // GET: Locations
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
-            return View(await _context.Locations.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var locations = from s in _context.Locations select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                locations = locations.Where(s => s.Name.Contains(searchString)
+                    || s.Acronym.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    locations = locations.OrderByDescending(s => s.Name);
+                    break;
+                default:
+                    locations = locations.OrderBy(s => s.Name); 
+                    break;
+            }
+                    
+            int pageSize = 20;
+            return View(await PaginatedList<Location>.CreateAsync(locations.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Locations/Create
