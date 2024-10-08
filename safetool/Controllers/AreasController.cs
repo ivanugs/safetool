@@ -22,10 +22,51 @@ namespace safetool.Controllers
         }
 
         // GET: Areas
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
-            var safetoolContext = _context.Areas.Include(a => a.Location);
-            return View(await safetoolContext.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["LocationSortParm"] = sortOrder == "Location" ? "location_desc" : "Location";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var areas = from s in _context.Areas
+                        .Include(d => d.Location)
+                        select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                areas = areas.Where(s => s.Name.Contains(searchString)
+                            || s.Location.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    areas = areas.OrderByDescending(s => s.Name);
+                    break;
+                case "Location":
+                    areas = areas.OrderBy(s => s.Location.Name);
+                    break;
+                case "location_desk":
+                    areas = areas.OrderByDescending(s => s.Location.Name);
+                    break;
+                default:
+                    areas = areas.OrderBy(s => s.Name);
+                    break;
+            }
+
+            int pageSize = 20;
+            return View(await PaginatedList<Area>.CreateAsync(areas.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Areas/Create
