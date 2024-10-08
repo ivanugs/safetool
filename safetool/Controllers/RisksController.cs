@@ -23,9 +23,41 @@ namespace safetool.Controllers
         }
 
         // GET: Risks
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
-            return View(await _context.Risks.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var risks = from s in _context.Risks select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                risks = risks.Where(s => s.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    risks = risks.OrderByDescending(s => s.Name);
+                    break;
+                default:
+                    risks = risks.OrderBy(s => s.Name);
+                    break;
+            }
+
+            int pageSize = 20;
+            return View(await PaginatedList<Risk>.CreateAsync(risks.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Risks/Details/5

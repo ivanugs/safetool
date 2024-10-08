@@ -22,9 +22,41 @@ namespace safetool.Controllers
         }
 
         // GET: PPEs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
-            return View(await _context.PPEs.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var ppes = from s in _context.PPEs select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                ppes = ppes.Where(s => s.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    ppes = ppes.OrderByDescending(s => s.Name);
+                    break;
+                default:
+                    ppes = ppes.OrderBy(s => s.Name);
+                    break;
+            }
+
+            int pageSize = 20;
+            return View(await PaginatedList<PPE>.CreateAsync(ppes.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: PPEs/Details/5

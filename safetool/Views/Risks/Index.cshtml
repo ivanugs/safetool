@@ -1,4 +1,4 @@
-﻿@model IEnumerable<safetool.Models.Risk>
+﻿@model PaginatedList<safetool.Models.Risk>
 
 @{
     ViewData["Title"] = "Riesgos";
@@ -21,6 +21,20 @@
     <h1 class="fs-5">Administración de riesgos</h1>
 </div>
 
+<div class="mb-4 fs-6">
+    <form asp-action="Index" method="get">
+        <div class="d-flex flex-column">
+            <div>
+                <label for="SearchString" class="form-label">Realizar búsqueda: </label>
+            </div>
+            <div class="d-flex">
+                <input class="form-control me-2 w-25" type="search" placeholder="Búsqueda" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                <button type="submit" class="btn btn-custom">Buscar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
 <p class="fs-6 mb-3">
     <a asp-action="Create">Agregar registro</a>
 </p>
@@ -32,7 +46,7 @@
                 #
             </th>
             <th scope="col">
-                Riesgo de seguridad
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Riesgo de seguridad</a>
             </th>
             <th scope="col">
                 Pictograma
@@ -66,3 +80,23 @@
     }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-custom @prevDisabled">
+    Anterior
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-custom @nextDisabled">
+    Siguiente
+</a>
