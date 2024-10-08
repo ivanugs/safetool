@@ -22,9 +22,41 @@ namespace safetool.Controllers
         }
 
         // GET: DeviceTypes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
-            return View(await _context.DeviceTypes.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var devicetypes = from s in _context.DeviceTypes select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                devicetypes = devicetypes.Where(s => s.Name.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    devicetypes = devicetypes.OrderByDescending(s => s.Name);
+                    break;
+                default:
+                    devicetypes = devicetypes.OrderBy(s => s.Name);
+                    break;
+            }
+
+            int pageSize = 20;
+            return View(await PaginatedList<DeviceType>.CreateAsync(devicetypes.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: DeviceTypes/Create
