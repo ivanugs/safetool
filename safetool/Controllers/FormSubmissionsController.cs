@@ -75,7 +75,7 @@ namespace safetool.Controllers
                     break;
             }
 
-            int pageSize = 20;
+            int pageSize = 15;
             return View(await PaginatedList<FormSubmission>.CreateAsync(submissions.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 

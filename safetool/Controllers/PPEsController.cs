@@ -55,7 +55,7 @@ namespace safetool.Controllers
                     break;
             }
 
-            int pageSize = 20;
+            int pageSize = 15;
             return View(await PaginatedList<PPE>.CreateAsync(ppes.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 

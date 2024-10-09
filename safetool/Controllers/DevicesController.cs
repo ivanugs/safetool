@@ -59,11 +59,73 @@ namespace safetool.Controllers
 
         [Authorize(Roles = "Administrador, Operador")]
         // GET: Devices/List
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> List(string sortOrder, string searchString, string currentFilter, int? pageNumber)
         {
-            var device = await _context.Devices.ToListAsync();
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["ModelSortParm"] = sortOrder == "Model" ? "model_desc" : "Model";
+            ViewData["AreaSortParm"] = sortOrder == "Area" ? "area_desc" : "Area";
+            ViewData["LocationSortParm"] = sortOrder == "Location" ? "location_desc" : "Location";
 
-            return View(device);
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var devices = from s in _context.Devices
+                          .Include(d => d.Area)
+                          .Include(d => d.DeviceType)
+                          .Include(d => d.RiskLevel)
+                          .Include(d => d.PPEs)
+                          .Include(d => d.Risks)
+                          .Include(d => d.Area.Location)
+                          select s;
+
+            if (!String.IsNullOrEmpty(searchString))        
+            {
+                devices = devices.Where(s => s.Name.Contains(searchString)
+                                  || s.Area.Name.Contains(searchString)
+                                  || s.Area.Location.Name.Contains(searchString)
+                                  || s.Model.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    devices = devices.OrderByDescending(s => s.Name);
+                    break;
+                case "Location":
+                    devices = devices.OrderBy(s => s.Area.Location.Name);
+                    break;
+                case "location_desc":
+                    devices = devices.OrderByDescending(s => s.Area.Location.Name);
+                    break;
+                case "Area":
+                    devices = devices.OrderBy(s => s.Area.Name);
+                    break;
+                case "area_desc":
+                    devices = devices.OrderByDescending(s => s.Area.Name);
+                    break;
+                case "Model":
+                    devices = devices.OrderBy(s => s.Model);
+                    break;
+                case "model_desc":
+                    devices = devices.OrderByDescending(s => s.Model);
+                    break;
+                default:
+                    devices = devices.OrderBy(s => s.Name);
+                    break;
+            }
+
+            int pageSize = 15;
+            return View(await PaginatedList<Device>.CreateAsync(devices.AsNoTracking(), pageNumber ?? 1, pageSize));
+
         }
 
         // GET: Devices/Details/5
