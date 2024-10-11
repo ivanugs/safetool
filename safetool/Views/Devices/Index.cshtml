@@ -10,7 +10,6 @@
 <style>
 
     #card {
-        border: 3px solid var(--var-color-second);
         box-sizing: border-box;
         background: var(--var-color-main);
         width: 400px;
@@ -33,9 +32,9 @@
 </div>
 
 <!-- Filtros de Localidad y Área -->
-<div class="d-flex align-items-center mb-4">
+<div class="d-flex justify-content-center align-items-center mb-5">
     <form asp-action="Index" method="get">
-        <div class="d-flex flex-row gap-4">
+        <div class="d-flex flex-row gap-4 justify-content-between" style="width: 800px">
             <div class="" style="min-width:300px;">
                 <label for="LocationID" class="form-label">Localidad:</label>
                 <select id="locations" name="LocationID" class="form-select" asp-items="ViewBag.Locations">
@@ -55,21 +54,24 @@
     </form>
 </div>
 
-<div class="w-100 d-flex justify-content-center mb-4">
+<div class="w-100 d-flex justify-content-center mb-5">
     <div style="width:980px;" class="d-flex flex-row align-content-center justify-content-center gap-4 p-1 flex-wrap">
         @if (Model.Any())
         {
             @foreach (var device in Model)
             {
-                <div id="card" class="d-flex align-items-center px-3 rounded-pill shadow-sm justify-content-between">
-                    <a style="text-decoration: none;" class="text-light w-100" asp-action="Details" asp-route-id="@device.ID">
+                <div id="card" class="d-flex align-items-center px-3 justify-content-between rounded-3">
+                    <a style="text-decoration: none;" class="w-100 text-light d-flex flex-row gap-2" asp-action="Details" asp-route-id="@device.ID">
+                        @* <div>
+                            <img src="@device.Image" width="45" height="45"/>
+                        </div> *@
                         <div class="d-flex flex-column w-100 gap-1">
-                            <div class="overflow-hidden text-nowrap fs-5 text-uppercase">
-                                <p>@device.Name</p>
+                            <div style="font-size:18px" class="overflow-hidden text-nowrap text-uppercase">
+                                <p class="text-nowrap text-truncate">@device.Name</p>
                             </div>
-                            <div class="d-flex align-items-center gap-5 fs-6 text-uppercase">
-                                <p>@device.Model</p>
-                                <p>@device.Area.Name</p>
+                            <div style="font-weight:300; font-size:16px" class="d-flex align-items-center gap-5">
+                                <p class="text-nowrap">@device.Model</p>
+                                <p class="text-nowrap text-truncate">@device.Area.Name</p>
                             </div>
                         </div>
                     </a>
@@ -85,8 +87,10 @@
 
 @if (Model.Any())
 {
-    <a asp-controller="Devices" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" class="btn btn-custom @prevDisabled">Anterior</a>
-    <a asp-controller="Devices" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" class="btn btn-custom @nextDisabled">Siguiente</a>
+    <div class="d-flex w-100 justify-content-center gap-2">
+        <a asp-controller="Devices" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" class="btn btn-custom @prevDisabled">Anterior</a>
+        <a asp-controller="Devices" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" class="btn btn-custom @nextDisabled">Siguiente</a>
+    </div>
 }
 
 @section Scripts {

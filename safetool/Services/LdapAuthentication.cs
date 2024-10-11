@@ -14,30 +14,62 @@ namespace safetool.Services
             _ldapDomain = ldapDomain;
         }
 
-        public bool Authenticate(string username, string password)
+        public User AuthenticateAndGetUser(string username, string password)
         {
             try
             {
-                // Concatenar el UID con el dominio
                 string userPrincipalName = username + _ldapDomain;
 
-                using(DirectoryEntry  entry = new DirectoryEntry(_ldapPath, userPrincipalName, password))
+                using (DirectoryEntry entry = new DirectoryEntry(_ldapPath, userPrincipalName, password))
                 {
-                    // Vincularse al servidor LDAP usando las credenciales proporcionadas
+                    // Intenta acceder al objeto
                     object nativeObject = entry.NativeObject;
-                    return true;
+
+                    // Recuperar información del usuario
+                    var user = new User { Uid = username };
+
+                    // Realizar una búsqueda para obtener atributos
+                    using (DirectorySearcher searcher = new DirectorySearcher(entry))
+                    {
+                        searcher.Filter = $"(sAMAccountName={username})"; // Filtro por el nombre de usuario
+                        searcher.PropertiesToLoad.Add("mail");
+                        searcher.PropertiesToLoad.Add("displayName");
+                        searcher.PropertiesToLoad.Add("givenName"); // Nombre
+                        searcher.PropertiesToLoad.Add("sn"); // Apellido
+                        searcher.PropertiesToLoad.Add("st"); // Localidad
+
+                        SearchResult result = searcher.FindOne();
+                        if (result != null)
+                        {
+                            user.Email = result.Properties["mail"].Count > 0 ? result.Properties["mail"][0].ToString() : null;
+                            user.FullName = result.Properties["displayName"].Count > 0 ? result.Properties["displayName"][0].ToString() : null;
+                            user.FirstName = result.Properties["givenName"].Count > 0 ? result.Properties["givenName"][0].ToString() : null;
+                            user.LastName = result.Properties["sn"].Count > 0 ? result.Properties["sn"][0].ToString() : null;
+                        }
+                    }
+
+                    return user;
                 }
             }
             catch (DirectoryServicesCOMException)
             {
-                // Credenciales invalidas
-                return false;
+                return null; // Credenciales inválidas
             }
             catch (Exception ex)
             {
-                Console.WriteLine("LDAP error ocurred:" + ex.Message);
-                return false;
+                Console.WriteLine("LDAP error occurred: " + ex.Message);
+                return null;
             }
         }
     }
+
+    public class User
+    {
+        public string Uid { get; set; }
+        public string Email { get; set; }
+        public string FullName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
 }
+

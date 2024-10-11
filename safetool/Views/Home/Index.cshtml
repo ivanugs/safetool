@@ -4,55 +4,50 @@
 
 <style>
     #steps__icon {
-        width: 160px ;
+        width: 100px ;
     }
 
-    #main__header, #main__subtitle {
+    #main__header {
         color: var(--var-color-main-font);
     }
 
-    #main__steps, #main__link, #main__aclarations {
+    #main__steps {
         color: var(--var-color-text);
     }
 
     span {
         color: var(--var-color-main-font);
-        font-weight: 600;
     }
 
     #main__steps{
-        max-width: 450px;
+        max-width: 550px;
     }
 </style>
 
-<div id="container" class="w-100 mt-2 d-flex flex-column gap-4">
+<div id="container" class="w-100 mt-2 d-flex flex-column gap-5">
     <div id="main__header" class="d-flex justify-content-center align-items-center">
-        <h1 id="main__title" class="display-6">Bienvenido al sistema de consulta de análisis de riesgo de maquinarias y herramientas</h1>
+        <h1 id="main__title" class="display-6 text-wrap text-center">Bienvenido al sistema de consulta de análisis de riesgo de maquinarias y herramientas</h1>
     </div>
 
-    <div id="main__container__steps" class="d-flex flex-row justify-content-between gap-3 fs-5">
-        <div id="main__steps" class='d-flex flex-column justify-content-center gap-4 fs-5'>
+    <div class="d-flex flex-column align-self-center gap-4 fs-5">
+        <div id="main__steps" class='d-flex flex-column justify-content-center gap-4'>
             <p>
-                <span>1.</span> En el apartado de <span><a class="text-warning" id="main__link" asp-action="Index" asp-controller="Devices">Equipos</a></span> identifica la maquinaria o herramienta que usaras, seleccionando tu localidad y el área de tu interés en el apartado de filtro.
+                <span>1.</span> En el apartado de <span><a class="text-warning" asp-action="Index" asp-controller="Devices">Equipos</a></span> identifica la maquinaria o herramienta que usaras, seleccionando tu localidad y el área de tu interés en el apartado de filtro.
             </p>
-            <img id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/search_sRGB.png' />
+            <img id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/search.png' />
         </div>
-        <div id="main__steps" class='d-flex flex-column gap-4 fs-5'>
+        <div id="main__steps" class='d-flex flex-column gap-4'>
             <p>
                 <span>2.</span> Da clic en el equipo de tu interés y consulta su análisis de riesgo.
             </p>
             <img id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/file-lines-regular.png' />
         </div>
 
-        <div id="main__steps" class='d-flex flex-column gap-4 fs-5'>
+        <div id="main__steps" class='d-flex flex-column gap-4'>
             <p>
-                <span>3.</span> Por último, dirígete al formulario al final de la página de Detalles, completa con tus datos y envíalos.
+                <span>3.</span> Por último, dirígete al final de la página <span>Detalles</span>, completa el formulario con tus datos y envíalo.
             </p>
-            <img id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/checklist.png' />
+            <img id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/check-mark.png' />
         </div>
-    </div>
-
-    <div id="main__aclarations" class="fs-5 mt-5 fst-italic text-start">
-        <p>Para dudas y aclaraciones consulta a tu equipo de ESH local.</p>
     </div>
 </div>

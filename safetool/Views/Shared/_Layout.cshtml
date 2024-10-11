@@ -10,33 +10,30 @@
     <link rel="stylesheet" href="~/css/reset.css" asp-append-version="true" />
     <link href="~/css/select2.min.css" rel="stylesheet" />
     <link href="~/css/sweetalert2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.0/dist/sweetalert2.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <header role="heading" class="d-flex flex-row justify-content-between align-items-center px-3 header__section">
-        <div class="d-flex">
-            <p class="h2 header__title">SafeTool</p>
+        <div class="d-flex flex-row justify-content-center align-items-center align-self-center" style="width:250px">
+            <img width="200" src="~/images/branding/Continental_Logo_Tagline_White.png" alt="Logo Continental" />
         </div>
-        <div class="d-flex flex-row justify-content-center align-items-center">
-            <img style="width:15rem;" class="header__logo" src="~/images/branding/Continental_Logo_Tagline_White.png" alt="Logo Continental" />
+        <div class="d-flex justify-content-center align-content-center" style="width:250px">
+            <h1 class="display-6 header__title">SafeTool</h1>
         </div>
         @if (User.Identity.IsAuthenticated)
         {
-            <div class="d-flex flex-column text-white fs-6 justify-content-center align-items-end">
-                <p>@User.Identity.Name | </p>
+            <div class="d-flex flex-column text-white fs-6 justify-content-center align-items-end" style="width:250px;">
+                <p>@User.Claims.FirstOrDefault(c => c.Type == "FullName")?.Value | </p>
                 <form asp-controller="Auth" asp-action="Logout" method="post">
-                    <button type="submit" class="btn btn-link text-white fs-6 p-0 m-0" style="text-decoration: none;"><i style="transform: rotate(180deg)" class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
+                    <button type="submit" class="btn btn-link text-white p-0 m-0" style="text-decoration: none;"><i style="transform: rotate(180deg)" class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
                 </form>
                 @if (User.IsInRole("Administrador") || User.IsInRole("Operador"))
                 {
-                    <div class="d-flex flex-column fs-6 justify-content-center">
+                    <div class="d-flex flex-column justify-content-center">
                         <a class="text-white" asp-controller="Admin" asp-action="Index" style="text-decoration: none;">Administrar</a>
                     </div>
                 }
             </div>
         }
-        
     </header>
 
     <div class="">

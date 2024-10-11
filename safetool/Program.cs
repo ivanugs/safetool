@@ -13,8 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Configura la información de LDAP y Registro del servicio LDAP con los datos de conexión
-string ldapHost = "LDAP://cw01.contiwan.com";  // ad_host_1
-string ldapDomain = "@cw01.contiwan.com";      // ad_dominio_1
+string ldapHost = "LDAP://cw01.contiwan.com"; 
+string ldapDomain = "@cw01.contiwan.com";  
 builder.Services.AddTransient<LdapAuthentication>(provider =>
     new LdapAuthentication(ldapHost, ldapDomain));
 

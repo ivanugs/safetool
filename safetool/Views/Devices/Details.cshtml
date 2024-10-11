@@ -5,8 +5,9 @@
 }
 
 <style>
-    span {
-        font-weight: 600;
+    span, #titles {
+        font-weight: 500;
+        color: black !important;
     }
 
     .light {
@@ -26,6 +27,11 @@
     .green {
         background-color: green;
     }
+
+    #content {
+        font-weight:400;
+        color: var(--var-color-main-font);
+    }
 </style>
 
 <div class="mb-4 d-flex gap-5 align-items-center">
@@ -38,12 +44,12 @@
 <section class="d-flex flex-column justify-content-center align-items-center gap-3 w-100">
     @*Seccion de informacion general*@
     <div class="d-flex flex-column fs-6 mb-4 gap-4">
-        <p class="fs-5">@Model.Name</p>
+        <p id="titles" class="fs-5">@Model.Name</p>
         <div class="d-flex flex-row">
             <div class="me-5">
                 <img class="rounded" src="@Model.Image" alt="Device Image" width="250" />
             </div>
-            <div class="d-flex flex-column justify-content-between p-1">
+            <div id="content" class="d-flex flex-column justify-content-between p-1">
                 <p><span>Modelo:</span> @Model.Model</p>
                 <p><span>Área:</span> @Model.Area.Name</p>
                 <p><span>Tipo de equipo:</span> @Model.DeviceType.Name</p>
@@ -60,7 +66,7 @@
     @if (!string.IsNullOrEmpty(Model.EmergencyStopImage))
     {
         <div class="d-flex flex-column justify-content-center align-items-center mb-4">
-            <div class="fs-5 mb-3" style="font-weight:600">
+            <div class="fs-5 mb-3" style="font-weight:500">
                 Paro de emergencia
             </div>
             <div>
@@ -73,10 +79,10 @@
     @if (!string.IsNullOrEmpty(Model.TypeSafetyDevice))
     {
         <div class="d-flex flex-column justify-content-center align-items-center mb-4">
-            <div class="fs-5 mb-3" style="font-weight:600">
+            <div class="fs-5 mb-3" style="font-weight:500">
                 Dispositivo de seguridad
             </div>
-            <div class="d-flex flex-column justify-content-between p-1 fs-6 gap-2">
+            <div id="content" class="d-flex flex-column justify-content-between p-1 fs-6 gap-2">
                 <p><span>Tipo de dispositivo:</span> @Model.TypeSafetyDevice</p>
                 <p><span>Función del dispositivo:</span> @Model.FunctionSafetyDevice</p>
             </div>
@@ -85,13 +91,13 @@
 
     @*Seccion de riesgos*@
     <div class="d-flex flex-column justify-content-center align-items-center mb-4">
-        <div class="fs-5 mb-3" style="font-weight:600">
+        <div class="fs-5 mb-3" style="font-weight:500">
             Riesgos de seguridad
         </div>
         <div class="d-flex flex-row">
             @foreach (var risk in Model.Risks)
             {
-                <div style="width: 150px;" class="d-flex flex-column align-items-center gap-2">
+                <div id="content" style="width: 150px;" class="d-flex flex-column align-items-center gap-2">
                     <img class="rounded" src="@risk.Image" alt="@risk.Name" width="100"/>
                     <p class="text-center fs-6">@risk.Name</p>
                 </div>
@@ -101,13 +107,13 @@
 
     @*Seccion de epp*@
     <div class="d-flex flex-column justify-content-center align-items-center mb-4">
-        <div class="fs-5 mb-3" style="font-weight:600">
+        <div class="fs-5 mb-3" style="font-weight:500">
             Equipo de protección personal necesario
         </div>
         <div class="d-flex flex-row">
             @foreach (var ppe in Model.PPEs)
             {
-                <div style="width: 150px;" class="d-flex flex-column align-items-center gap-2">
+                <div id="content" style="width: 150px;" class="d-flex flex-column align-items-center gap-2">
                     <img class="rounded" src="@ppe.Image" alt="@ppe.Name" width="100" />
                     <p class="text-center fs-6">@ppe.Name</p>
                 </div>
@@ -117,11 +123,11 @@
 
     @*Seccion de nievl de riesgo*@
     <div class="d-flex flex-column mb-4 justify-content-center align-items-center">
-        <div class="fs-5 mb-2" style="font-weight:600">
+        <div class="fs-5 mb-2" style="font-weight:500">
             Nivel de riesgo
         </div>
         <div class="">
-            <div class="d-flex flex-column gap-2 fs-6 p-1 justify-content-center align-items-center" style="width:fit-content">
+            <div id="content" class="d-flex flex-column gap-2 fs-6 p-1 justify-content-center align-items-center" style="width:fit-content">
                 @if (Model.RiskLevel.Level == "Alto")
                 {
                     <div class="light red" title="Alto Riesgo"></div>
@@ -144,7 +150,7 @@
     @*Seccion de formulario*@
     <div class="d-flex flex-column justify-content-center align-items-center mb-4">
         <div class="card p-4 col-6">
-            <div class="p-6 text-center mb-4 fs-5" style="font-weight:600">
+            <div class="p-6 text-center mb-4 fs-5" style="font-weight:500">
                 Completa los siguientes campos sí has leído y comprendido el análisis de riesgo
             </div>
             <div class="p-6 fs-6">
@@ -168,13 +174,13 @@
                             <option value="location">@Model.Area.Location.Name</option>
                         </select>
                     </div>
-                    <div class="form-text text-wrap mb-4">
+                    <div id="content" class="form-text text-wrap mb-4">
                         Al enviar este formulario, usted confirma que ha comprendido el análisis de riesgo relacionado con la herramienta o maquinaria especificada.
                         Este formulario NO constituye un permiso para el uso de dicho equipo y NO se considera una capacitación para su operación.
                         Para cualquier duda o inquietud adicional, por favor diríjase al equipo de ESH local.
                     </div>
                     <div class="d-flex justify-content-center align-items-center">
-                        <button class="btn btn-custom" type="submit">
+                        <button class="btn btn-custom" type="button" onclick="SendForm()">
                             Enviar
                         </button>
                     </div>

@@ -6,23 +6,64 @@
     --var-color-hover: #EB9800;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+@font-face {
+    font-family: "ContinentalStagSans";
+    src: url('../fonts/Continental Stag Sans-Book Italic.otf') format('opentype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "ContinentalStagSans";
+    src: url('../fonts/Continental Stag Sans-Book.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "ContinentalStagSans";
+    src: url('../fonts/Continental Stag Sans-Light Italic.otf') format('opentype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "ContinentalStagSans";
+    src: url('../fonts/Continental Stag Sans-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "ContinentalStagSans";
+    src: url('../fonts/Continental Stag Sans-Medium Italic.otf') format('opentype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "ContinentalStagSans";
+    src: url('../fonts/Continental Stag Sans-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+
+html {
+    position: relative;
+    min-height: 100%;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    font-family: 'ContinentalStagSans', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
 }
 
 @media (min-width: 1200px) {
@@ -31,9 +72,16 @@ body {
     }
 }
 
-.form-select:focus {
-    box-shadow: 0 0 0 0.25rem var(--var-color-main);
-    border: none;
+.form-select{
+    color: var(--var-color-main-font);
+}
+    .form-select:focus {
+        box-shadow: 0 0 0 0.25rem var(--var-color-main);
+        border: none;
+    }
+
+.form-control {
+    color: var(--var-color-main-font);
 }
 
 .form-control:focus {
@@ -47,7 +95,6 @@ body {
     width: auto;
     height: auto;
     border-radius: 5px;
-    /*margin: 0 5px;*/
 }
 
 .btn-custom:hover {
@@ -63,4 +110,15 @@ body {
     background-color: var(--var-color-main);
     border: none;
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--var-color-main);
+}
+
+h1{
+    color: var(--var-color-main-font);
+    font-family: ContinentalStagSans, Arial;
+    font-style:normal;
+    font-weight:400;
+}
+
+td {
+    color: var(--var-color-main-font)
 }

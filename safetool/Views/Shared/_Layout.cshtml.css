@@ -9,5 +9,6 @@ for details on configuring this project to bundle and minify static web assets. 
 
 .header__title {
     color: white;
-    font-weight: 600;
+    font-family: "ContinentalStagSans";
+    font-weight: 500;
 }

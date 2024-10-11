@@ -32,27 +32,26 @@ namespace safetool.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string uid, string password)
         {
-            //Autenticar usuario con LDAP
-            bool isAuthenticated = _ldapAuth.Authenticate(uid, password);
+            var user = _ldapAuth.AuthenticateAndGetUser(uid, password);
 
-            if (isAuthenticated)
+            if (user != null)
             {
-                //Obtener roles de la base de datos
                 var roles = _roleService.GetRolesForUser(uid);
 
-                // Crear claims (uid y roles)
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, uid)
+                    new Claim(ClaimTypes.Name, uid),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim("FullName", user.FullName),
+                    new Claim("FirstName", user.FirstName),
+                    new Claim("LastName", user.LastName),
                 };
 
-                // Agregar los roles como claims
                 foreach (var role in roles)
                 {
                     claims.Add(new Claim(ClaimTypes.Role, role));
                 }
 
-                // Crear la identidad y la cookie de autenticación
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
@@ -62,6 +61,8 @@ namespace safetool.Controllers
             ViewBag.ErrorMessage = "Autenticación fallida";
             return View();
         }
+
+
 
         [HttpGet]
         public IActionResult AccessDenied()
