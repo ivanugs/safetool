@@ -47,6 +47,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<GeneralParameterService>();
 
 
+builder.Services.AddHostedService<ExpiredRegistrationChecker>();
+builder.Services.AddScoped<FormSubmissionService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

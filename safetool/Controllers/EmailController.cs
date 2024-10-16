@@ -24,6 +24,7 @@ namespace safetool.Controllers
         public async Task<IActionResult> SendEmail(string subject, string body, int deviceID)
         {
             var device = await _context.Devices.FindAsync(deviceID);
+
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
 
             await _emailService.SendEmailAsync(email, subject, body);

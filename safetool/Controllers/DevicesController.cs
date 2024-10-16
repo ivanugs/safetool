@@ -26,6 +26,30 @@ namespace safetool.Controllers
             _configuration = configuration;
         }
 
+        public bool IsRegistered(int deviceID, string employeeUID)
+        {
+            // Obtener la última fecha de registro
+            var lastSubmission = _context.FormSubmissions
+                .Where(f => f.DeviceID == deviceID && f.EmployeeUID == employeeUID)
+                .OrderByDescending(f => f.CreatedAt)
+                .FirstOrDefault();
+
+            // Si no hay registros previos, no está registrado
+            if (lastSubmission == null)
+            {
+                return false;
+            }
+
+            // Verificar si han pasado más de 6 meses desde la fecha de registro
+            if (lastSubmission.CreatedAt.AddMinutes(10) <= DateTime.Now)
+            {
+                return false; // Registro ha expirado
+            }
+
+            return true; // Registro válido
+        }
+
+
         // GET: Devices
         public async Task<IActionResult> Index(int? locationID, int? areaID, int? pageIndex)
         {
@@ -58,10 +82,15 @@ namespace safetool.Controllers
             }
 
             // Verificar si el usuario ya ha registrado algún dispositivo
-            var registeredDevices = _context.FormSubmissions
-                .Where(f => f.EmployeeUID == userId)
-                .Select(f => f.DeviceID)
-                .ToList();
+            var registeredDevices = new List<int>();
+
+            foreach (var device in devices)
+            {
+                if (IsRegistered(device.ID, userId))
+                {
+                    registeredDevices.Add(device.ID);  // Añadir el ID si está registrado y no ha expirado
+                }
+            }
 
             ViewBag.RegisteredDevices = registeredDevices;
 
@@ -168,8 +197,7 @@ namespace safetool.Controllers
             var userId = User.Identity.Name;
 
             // Verificar si el dispositivo ya ha sido registrado por el usuario
-            var isRegistered = await _context.FormSubmissions
-                .AnyAsync(f => f.DeviceID == id && f.EmployeeUID == userId);
+            var isRegistered = IsRegistered(device.ID, userId);
 
             // Pasar la información de registro a la vista
             ViewBag.IsRegistered = isRegistered;

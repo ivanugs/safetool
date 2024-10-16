@@ -204,6 +204,9 @@ namespace safetool.Data
                 entity.Property(e => e.EmployeeName)
                 .HasMaxLength(100);
 
+                entity.Property(e => e.EmployeeEmail)
+                .HasMaxLength(100);
+
                 entity.HasOne(fs => fs.Device)
                 .WithMany(d => d.FormSubmissions)
                 .HasForeignKey(fs => fs.DeviceID);

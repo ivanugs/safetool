@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -84,6 +85,7 @@ namespace safetool.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int deviceID, string employeeUID, string employeeName, FormSubmission formSubmission)
         {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
             var device = await _context.Devices.FindAsync(deviceID);
             if (device == null)
             {
@@ -97,6 +99,7 @@ namespace safetool.Controllers
                 formSubmission.DeviceID = deviceID;
                 formSubmission.EmployeeUID = employeeUID;
                 formSubmission.EmployeeName = employeeName;
+                formSubmission.EmployeeEmail = email;
                 formSubmission.CreatedAt = DateTime.Now;
 
                 // Guardar en la base de datos

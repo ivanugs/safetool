@@ -12,6 +12,7 @@ namespace safetool.Models
         public string? EmployeeUID { get; set; }
 
         public string? EmployeeName { get; set; }
+        public string? EmployeeEmail { get; set; }
 
         public int DeviceID { get; set; } // Foreign key
         public Device? Device { get; set; }
