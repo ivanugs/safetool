@@ -48,7 +48,7 @@ namespace safetool.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                submissions = submissions.Where(s => s.EmployeeNumber.Contains(searchString)
+                submissions = submissions.Where(s => s.EmployeeUID.Contains(searchString)
                                           || s.EmployeeName.Contains(searchString)
                                           || s.Device.Model.Contains(searchString));
             }
@@ -56,7 +56,7 @@ namespace safetool.Controllers
             switch (sortOrder)
             {
                 case "number_desc":
-                    submissions = submissions.OrderByDescending(s => s.EmployeeNumber);
+                    submissions = submissions.OrderByDescending(s => s.EmployeeUID);
                     break;
                 case "Location":
                     submissions = submissions.OrderBy(s => s.Device.Area.Location.Name);
@@ -71,7 +71,7 @@ namespace safetool.Controllers
                     submissions = submissions.OrderByDescending(s => s.Device.Area.Name);
                     break;
                 default:
-                    submissions = submissions.OrderBy(s => s.EmployeeNumber);
+                    submissions = submissions.OrderBy(s => s.EmployeeUID);
                     break;
             }
 
@@ -82,7 +82,7 @@ namespace safetool.Controllers
         // POST: FormSubmissions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int deviceID, string employeeNumber, string employeeName, FormSubmission formSubmission)
+        public async Task<IActionResult> Create(int deviceID, string employeeUID, string employeeName, FormSubmission formSubmission)
         {
             var device = await _context.Devices.FindAsync(deviceID);
             if (device == null)
@@ -95,7 +95,7 @@ namespace safetool.Controllers
             {
                 // Asignar el DeviceID al formSubmission
                 formSubmission.DeviceID = deviceID;
-                formSubmission.EmployeeNumber = employeeNumber;
+                formSubmission.EmployeeUID = employeeUID;
                 formSubmission.EmployeeName = employeeName;
                 formSubmission.CreatedAt = DateTime.Now;
 

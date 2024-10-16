@@ -40,11 +40,11 @@ namespace safetool.Controllers
 
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, uid),
+                    new Claim(ClaimTypes.Name, user.Uid),
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim("FullName", user.FullName),
                     new Claim("FirstName", user.FirstName),
-                    new Claim("LastName", user.LastName),
+                    new Claim("LastName", user.LastName)
                 };
 
                 foreach (var role in roles)

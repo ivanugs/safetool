@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using safetool.Data;
 
@@ -11,9 +12,11 @@ using safetool.Data;
 namespace safetool.Migrations
 {
     [DbContext(typeof(SafetoolContext))]
-    partial class SafetoolContextModelSnapshot : ModelSnapshot
+    [Migration("20241015165713_Update")]
+    partial class Update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -204,59 +207,6 @@ namespace safetool.Migrations
                     b.HasIndex("DeviceID");
 
                     b.ToTable("FormSubmission", (string)null);
-                });
-
-            modelBuilder.Entity("safetool.Models.GeneralParameter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("EmailAccount")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailAccountDisplayName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailAccountPassword")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailAccountUser")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailPort")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailServer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EmailSsl")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("GeneralParameters");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            EmailAccount = "mats.au_zu_fa@continental-corporation.com",
-                            EmailAccountDisplayName = "IT Management",
-                            EmailAccountPassword = "4pp54c0unt!!",
-                            EmailAccountUser = "uig02796@contiwan.com",
-                            EmailPort = "2525",
-                            EmailServer = "SMTPHubEU.contiwan.com",
-                            EmailSsl = true
-                        });
                 });
 
             modelBuilder.Entity("safetool.Models.Location", b =>

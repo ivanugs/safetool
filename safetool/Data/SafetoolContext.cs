@@ -20,6 +20,7 @@ namespace safetool.Data
         public DbSet<RiskLevel> RiskLevels { get; set; }
         public DbSet<Device> Devices { get; set; }
         public DbSet<FormSubmission> FormSubmissions { get; set; }
+        public DbSet<GeneralParameter> GeneralParameters { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -48,8 +49,7 @@ namespace safetool.Data
 
                 entity.HasOne(d => d.Role)
                 .WithMany(p => p.UserRoles)
-                .HasForeignKey(d => d.RoleID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(d => d.RoleID);
             });
 
             // Principal
@@ -80,8 +80,7 @@ namespace safetool.Data
 
                 entity.HasOne(d => d.Location)
                 .WithMany(p => p.Areas)
-                .HasForeignKey(d => d.LocationID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(d => d.LocationID);
             });
 
             //Principal
@@ -172,13 +171,11 @@ namespace safetool.Data
 
                 entity.HasOne(d => d.Area)
                 .WithMany(p => p.Devices)
-                .HasForeignKey(d => d.AreaID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(d => d.AreaID);
 
                 entity.HasOne(d => d.DeviceType)
                 .WithMany(p => p.Devices)
-                .HasForeignKey(d => d.DeviceTypeID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(d => d.DeviceTypeID);
 
                 entity.HasMany(d => d.PPEs)
                 .WithMany(p => p.Devices)
@@ -190,8 +187,7 @@ namespace safetool.Data
 
                 entity.HasOne(d => d.RiskLevel)
                 .WithMany(p => p.Devices)
-                .HasForeignKey(d => d.RiskLevelID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(d => d.RiskLevelID);
 
             });
 
@@ -202,16 +198,20 @@ namespace safetool.Data
                 entity.Property(e => e.ID)
                 .ValueGeneratedOnAdd();
 
-                entity.Property(e => e.EmployeeNumber)
-                .HasMaxLength(8);
+                entity.Property(e => e.EmployeeUID)
+                .HasMaxLength(15);
 
                 entity.Property(e => e.EmployeeName)
                 .HasMaxLength(100);
 
                 entity.HasOne(fs => fs.Device)
                 .WithMany(d => d.FormSubmissions)
-                .HasForeignKey(fs => fs.DeviceID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(fs => fs.DeviceID);
+            });
+
+            modelBuilder.Entity<GeneralParameter>(entity =>
+            {
+                entity.HasKey(g => g.Id);
             });
 
             modelBuilder.Entity<Role>().HasData(
@@ -228,6 +228,19 @@ namespace safetool.Data
             modelBuilder.Entity<UserRole>().HasData(
                 new UserRole { ID = 1, UserName = "uig65332", RoleID = 1 }
             );
+
+            modelBuilder.Entity<GeneralParameter>().HasData(
+                new GeneralParameter 
+                { 
+                    Id = 1,
+                    EmailAccount = "mats.au_zu_fa@continental-corporation.com", 
+                    EmailAccountDisplayName = "IT Management",
+                    EmailAccountPassword = "4pp54c0unt!!", 
+                    EmailAccountUser = "uig02796@contiwan.com",
+                    EmailPort = "2525", 
+                    EmailServer = "SMTPHubEU.contiwan.com", 
+                    EmailSsl = true
+            });
         }
     }
 }

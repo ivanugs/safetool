@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Pipelines;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using safetool.Data;
 using safetool.Models;
+using safetool.Services;
 
 namespace safetool.Controllers
 {
@@ -27,6 +29,8 @@ namespace safetool.Controllers
         // GET: Devices
         public async Task<IActionResult> Index(int? locationID, int? areaID, int? pageIndex)
         {
+            var userId = User.Identity.Name;  // Obtiene el UID del usuario autenticado
+
             // Obtener la lista de localidades para el dropdown
             ViewBag.Locations = new SelectList(_context.Locations.Where(l => l.Active == true), "ID", "Name");
             ViewBag.SelectedLocation = locationID;
@@ -52,6 +56,14 @@ namespace safetool.Controllers
                     devices = devices.Where(d => d.Active == true).Where(d => d.Area.Active == true).Where(d => d.AreaID == areaID.Value);
                 }
             }
+
+            // Verificar si el usuario ya ha registrado algún dispositivo
+            var registeredDevices = _context.FormSubmissions
+                .Where(f => f.EmployeeUID == userId)
+                .Select(f => f.DeviceID)
+                .ToList();
+
+            ViewBag.RegisteredDevices = registeredDevices;
 
             int pageSize = 10;
             return View(await PaginatedList<Device>.CreateAsync(devices.AsNoTracking(), pageIndex ?? 1, pageSize));
@@ -136,6 +148,8 @@ namespace safetool.Controllers
                 return NotFound();
             }
 
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+
             var device = await _context.Devices
                 .Include(d => d.Area)
                 .Include(d => d.DeviceType)
@@ -149,6 +163,16 @@ namespace safetool.Controllers
             {
                 return NotFound();
             }
+
+            // Obtener el UID del usuario autenticado
+            var userId = User.Identity.Name;
+
+            // Verificar si el dispositivo ya ha sido registrado por el usuario
+            var isRegistered = await _context.FormSubmissions
+                .AnyAsync(f => f.DeviceID == id && f.EmployeeUID == userId);
+
+            // Pasar la información de registro a la vista
+            ViewBag.IsRegistered = isRegistered;
 
             return View(device);
         }

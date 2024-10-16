@@ -39,7 +39,7 @@
     <thead>
         <tr>
             <th scope="col">
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NumberSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Número de empleado</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NumberSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Usuario</a>
             </th>
             <th scope="col">
                 Nombre del empleado
@@ -62,7 +62,7 @@
         @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.EmployeeNumber)
+                @Html.DisplayFor(modelItem => item.EmployeeUID)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EmployeeName)

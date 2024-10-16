@@ -5,6 +5,7 @@
 
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    var registeredDevices = ViewBag.RegisteredDevices as List<int>;  // La lista de dispositivos registrados
 }
 
 <style>
@@ -60,11 +61,10 @@
         {
             @foreach (var device in Model)
             {
+                var isRegistered = registeredDevices != null && registeredDevices.Contains(device.ID); // Verificar si el dispositivo ya fue registrado
+
                 <div id="card" class="d-flex align-items-center px-3 justify-content-between rounded-3">
                     <a style="text-decoration: none;" class="w-100 text-light d-flex flex-row gap-2" asp-action="Details" asp-route-id="@device.ID">
-                        @* <div>
-                            <img src="@device.Image" width="45" height="45"/>
-                        </div> *@
                         <div class="d-flex flex-column w-100 gap-1">
                             <div style="font-size:18px" class="overflow-hidden text-nowrap text-uppercase">
                                 <p class="text-nowrap text-truncate">@device.Name</p>
@@ -72,6 +72,10 @@
                             <div style="font-weight:300; font-size:16px" class="d-flex align-items-center gap-5">
                                 <p class="text-nowrap">@device.Model</p>
                                 <p class="text-nowrap text-truncate">@device.Area.Name</p>
+                                @if (isRegistered)
+                                {
+                                    <span class="text-success">✔️</span>
+                                }
                             </div>
                         </div>
                     </a>

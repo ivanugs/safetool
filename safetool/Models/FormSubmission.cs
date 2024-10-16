@@ -9,10 +9,8 @@ namespace safetool.Models
         [Key]
         public int ID { get; set; }
 
-        [Required(ErrorMessage = "Se requiere el nombre.")]
-        public string? EmployeeNumber { get; set; }
+        public string? EmployeeUID { get; set; }
 
-        [Required(ErrorMessage = "Se requiere el numero.")]
         public string? EmployeeName { get; set; }
 
         public int DeviceID { get; set; } // Foreign key

@@ -21,7 +21,7 @@ builder.Services.AddTransient<LdapAuthentication>(provider =>
 // Registro del servicio de roles
 builder.Services.AddTransient<RoleService>();
 
-//Configuracion del middleware de autenticacion y autorizacion.
+// Configuracion del middleware de autenticacion y autorizacion.
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -30,7 +30,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                     options.AccessDeniedPath = "/Auth/AccessDenied";
                 });
 
-//Configuración de autorización
+// Configuración de autorización
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
@@ -41,6 +41,11 @@ builder.Services.AddAuthorization(options =>
 // Register DBContext <MS SQL SERVER>
 builder.Services.AddDbContext<SafetoolContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Configuracion email
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<GeneralParameterService>();
+
 
 var app = builder.Build();
 

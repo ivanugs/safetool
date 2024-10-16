@@ -29,25 +29,32 @@
         <h1 id="main__title" class="display-6 text-wrap text-center">Bienvenido al sistema de consulta de análisis de riesgo de maquinarias y herramientas</h1>
     </div>
 
-    <div class="d-flex flex-column align-self-center gap-4 fs-5">
-        <div id="main__steps" class='d-flex flex-column justify-content-center gap-4'>
-            <p>
-                <span>1.</span> En el apartado de <span><a class="text-warning" asp-action="Index" asp-controller="Devices">Equipos</a></span> identifica la maquinaria o herramienta que usaras, seleccionando tu localidad y el área de tu interés en el apartado de filtro.
+    <div class="d-flex flex-column justify-content-center align-items-center fs-5">
+        <div style="color: var(--var-color-main-font); width: 980px;" class="d-flex justify-content-center align-items-center mb-5">
+            <p class="text-decoration-underline text-center">
+                La consulta de esta información es para dar cumplimiento a la NOM-004-STPS Sistema de Protección y Dispositivos de seguridad en las maquinarias y equipos que se utilicen en el centro de trabajo.
             </p>
-            <img id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/search.png' />
         </div>
-        <div id="main__steps" class='d-flex flex-column gap-4'>
-            <p>
-                <span>2.</span> Da clic en el equipo de tu interés y consulta su análisis de riesgo.
-            </p>
-            <img id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/file-lines-regular.png' />
-        </div>
+        <div class="d-flex flex-column justify-content-center align-items-center gap-4">
+            <div id="main__steps" class='d-flex flex-column gap-4'>
+                <p>
+                    <span>1.</span> En el apartado de <span><a class="text-warning" asp-action="Index" asp-controller="Devices">Equipos</a></span> identifica la maquinaria o herramienta que usaras, seleccionando tu localidad y el área de tu interés en el apartado de filtro.
+                </p>
+                <img id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/search.png' />
+            </div>
+            <div id="main__steps" class='d-flex flex-column gap-4'>
+                <p>
+                    <span>2.</span> Da clic en el equipo de tu interés y consulta su análisis de riesgo.
+                </p>
+                <img id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/file-lines-regular.png' />
+            </div>
 
-        <div id="main__steps" class='d-flex flex-column gap-4'>
-            <p>
-                <span>3.</span> Por último, dirígete al final de la página <span>Detalles</span>, completa el formulario con tus datos y envíalo.
-            </p>
-            <img id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/check-mark.png' />
+            <div id="main__steps" class='d-flex flex-column gap-4'>
+                <p>
+                    <span>3.</span> Por último, dirígete al final de la página <span>Detalles</span>, y registra que has leído el análisis de riesgo.
+                </p>
+                <img id="steps__icon" class='img-fluid align-self-center' src='~/images/icons/check-mark.png' />
+            </div>
         </div>
     </div>
 </div>

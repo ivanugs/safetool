@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Detalles";
+
+    var isRegistered = ViewBag.IsRegistered as bool?;
 }
 
 <style>
@@ -148,60 +150,67 @@
     </div>
 
     @*Seccion de formulario*@
-    <div class="d-flex flex-column justify-content-center align-items-center mb-4">
-        <div class="card p-4 col-6">
-            <div class="p-6 text-center mb-4 fs-5" style="font-weight:500">
-                Completa los siguientes campos sí has leído y comprendido el análisis de riesgo
-            </div>
-            <div class="p-6 fs-6">
-                <form id="EmployeeForm" asp-action="Create" asp-controller="FormSubmissions" method="post">
-                    <input type="hidden" name="deviceID" value="@Model.ID" />
-                    <div class="mb-4">
-                        <label class="form-label" for="employeeNumber">Número de empleado<span class="text-warning">*</span>:</label>
-                        <input class="form-control" id="employeeNumber" name="employeeNumber" aria-describedby="EmployeeNumberHelp" required />
-                        <div id="EmployeeNumberHelp" class="form-text">Ingrese su número de empleado</div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label" for="employeeName">Nombre completo<span class="text-warning">*</span>:</label>
-                        <input class="form-control" id="employeeName" name="employeeName" aria-describedby="FullNameHelp" required />
-                        <div id="FullNameHelp" class="form-text">Ingrese su nombre completo</div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label" for="">
-                            Lacalidad<span class="text-warning">*</span>:
-                        </label>
-                        <select class="form-control" id="location" disabled>
-                            <option value="location">@Model.Area.Location.Name</option>
-                        </select>
-                    </div>
-                    <div id="content" class="form-text text-wrap mb-4">
-                        Al enviar este formulario, usted confirma que ha comprendido el análisis de riesgo relacionado con la herramienta o maquinaria especificada.
-                        Este formulario NO constituye un permiso para el uso de dicho equipo y NO se considera una capacitación para su operación.
-                        Para cualquier duda o inquietud adicional, por favor diríjase al equipo de ESH local.
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center">
-                        <button class="btn btn-custom" type="button" onclick="SendForm()">
-                            Enviar
-                        </button>
-                    </div>
-                </form>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="d-flex flex-column justify-content-center align-items-center mb-4">
+            <div class="card p-4 col-4">
+                <div class="p-6 text-center mb-4 fs-5" style="font-weight:500">
+                    Registrar equipo
+                </div>
+                <div class="p-6 fs-6">
+                    <form id="EmployeeForm" asp-action="Create" asp-controller="FormSubmissions" method="post">
+                        <input type="hidden" name="deviceID" value="@Model.ID" />
+                        <input type="hidden" name="employeeUID" value="@User.Identity.Name" />
+                        <input type="hidden" name="employeeName" value="@User.Claims.FirstOrDefault(c => c.Type == "FullName")?.Value" />
+
+                        <div id="content" class="form-text text-wrap mb-4">
+                            Al enviar este formulario, usted confirma que ha comprendido el análisis de riesgo relacionado con la herramienta o maquinaria especificada.
+                            Este formulario NO constituye un permiso para el uso de dicho equipo y NO se considera una capacitación para su operación.
+                            Para cualquier duda o inquietud adicional, por favor diríjase al equipo de ESH local.
+                        </div>
+                        @if (isRegistered == true)
+                        {
+                            <div class="d-flex justify-content-center align-items-center">
+                                <p class="text-warning">Su registro sigue activo</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="d-flex justify-content-center align-items-center">
+                                <button class="btn btn-custom" type="button" onclick="SendForm()">
+                                    Enviar
+                                </button>
+                            </div>
+                        }
+                        
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+    }
+
+    <form id="EmailForm" asp-controller="Email" asp-action="SendEmail" method="post">
+        <input type="hidden" name="deviceID" value="@Model.ID" />
+        <input type="hidden" name="subject" value="Registro exitoso" />
+        <input type="hidden" name="body" value="Usted ha realizado exitosamente el registro de @Model.Name." />
+    </form>
 </section>
 
 @section Scripts {
     <script>
         function SendForm() {
-            event.preventDefault();
             Swal.fire({
-                title: "Buen trabajo!",
-                text: "Se ha enviado el formulario!",
+                title: "Registro exitoso!",
+                text: "Recibirá un correo confirmando su registro!",
                 icon: "success",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 2000
             }).then(() => {
-                document.getElementById('EmployeeForm').submit();
+                document.getElementById('EmailForm').submit();
+
+                setTimeout(function () {
+                    document.getElementById('EmployeeForm').submit();
+                }, 500);
             });
         }
     </script>

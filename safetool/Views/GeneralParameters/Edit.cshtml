@@ -1,0 +1,74 @@
+﻿@model safetool.Models.GeneralParameter
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<style>
+    a {
+        color: var(--var-color-secondary)
+    }
+
+        a:hover {
+            color: var(--var-color-main)
+        }
+</style>
+
+<h1 class="fs-5 mb-3">Administración de parámetros generales</h1>
+
+<h4>Editar parámetros</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="mb-3">
+                <label asp-for="EmailAccount" class="form-label"></label>
+                <input asp-for="EmailAccount" class="form-control" />
+                <span asp-validation-for="EmailAccount" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="EmailAccountDisplayName" class="form-label"></label>
+                <input asp-for="EmailAccountDisplayName" class="form-control" />
+                <span asp-validation-for="EmailAccountDisplayName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="EmailAccountPassword" class="form-label"></label>
+                <input asp-for="EmailAccountPassword" class="form-control" />
+                <span asp-validation-for="EmailAccountPassword" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="EmailAccountUser" class="form-label"></label>
+                <input asp-for="EmailAccountUser" class="form-control" />
+                <span asp-validation-for="EmailAccountUser" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="EmailPort" class="form-label"></label>
+                <input asp-for="EmailPort" class="form-control" />
+                <span asp-validation-for="EmailPort" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="EmailServer" class="form-label"></label>
+                <input asp-for="EmailServer" class="form-control" />
+                <span asp-validation-for="EmailServer" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="EmailSsl" /> @Html.DisplayNameFor(model => model.EmailSsl)
+                </label>
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="Guardar" class="btn btn-custom" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="f-6">
+    <a asp-action="Index">Regresar al listado</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

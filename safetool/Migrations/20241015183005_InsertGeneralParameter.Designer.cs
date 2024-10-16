@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using safetool.Data;
 
@@ -11,9 +12,11 @@ using safetool.Data;
 namespace safetool.Migrations
 {
     [DbContext(typeof(SafetoolContext))]
-    partial class SafetoolContextModelSnapshot : ModelSnapshot
+    [Migration("20241015183005_InsertGeneralParameter")]
+    partial class InsertGeneralParameter
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

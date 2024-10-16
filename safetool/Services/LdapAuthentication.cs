@@ -32,11 +32,10 @@ namespace safetool.Services
                     using (DirectorySearcher searcher = new DirectorySearcher(entry))
                     {
                         searcher.Filter = $"(sAMAccountName={username})"; // Filtro por el nombre de usuario
-                        searcher.PropertiesToLoad.Add("mail");
-                        searcher.PropertiesToLoad.Add("displayName");
+                        searcher.PropertiesToLoad.Add("mail"); // Correo
+                        searcher.PropertiesToLoad.Add("displayName"); // UID
                         searcher.PropertiesToLoad.Add("givenName"); // Nombre
                         searcher.PropertiesToLoad.Add("sn"); // Apellido
-                        searcher.PropertiesToLoad.Add("st"); // Localidad
 
                         SearchResult result = searcher.FindOne();
                         if (result != null)

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<safetool.Models.GeneralParameter>
+
+@{
+    ViewData["Title"] = "Parámetros Generales";
+}
+
+<style>
+    a {
+        color: var(--var-color-secondary)
+    }
+
+        a:hover {
+            color: var(--var-color-main)
+        }
+</style>
+
+<div class="mb-4 d-flex gap-4 align-items-center mb-5">
+    <a asp-controller="Admin" asp-action="Index">
+        <img src="/images/icons/arrow-left-solid.png" alt="Arrow Icon" width="20" />
+    </a>
+    <h1 class="fs-5">Administración de parámetros generales</h1>
+</div>
+
+@foreach (var item in Model)
+{
+    <div class="d-flex flex-column gap-5">
+        <p><strong>@Html.DisplayNameFor(model => item.EmailAccount):</strong> @Html.DisplayFor(modelItem => item.EmailAccount)</p>
+        <p><strong>@Html.DisplayNameFor(model => item.EmailAccountDisplayName):</strong> @Html.DisplayFor(modelItem => item.EmailAccountDisplayName)</p>
+        <p><strong>@Html.DisplayNameFor(model => item.EmailAccountPassword):</strong> @Html.DisplayFor(modelItem => item.EmailAccountPassword)</p>
+        <p><strong>@Html.DisplayNameFor(model => item.EmailAccountUser):</strong> @Html.DisplayFor(modelItem => item.EmailAccountUser)</p>
+        <p><strong>@Html.DisplayNameFor(model => item.EmailPort):</strong> @Html.DisplayFor(modelItem => item.EmailPort)</p>
+        <p><strong>@Html.DisplayNameFor(model => item.EmailServer):</strong> @Html.DisplayFor(modelItem => item.EmailServer)</p>
+        <p><strong>@Html.DisplayNameFor(model => item.EmailSsl):</strong> @Html.DisplayFor(modelItem => item.EmailSsl)</p>
+
+        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+    </div>
+}
