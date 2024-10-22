@@ -41,7 +41,7 @@ namespace safetool.Controllers
             }
 
             // Verificar si han pasado más de 6 meses desde la fecha de registro
-            if (lastSubmission.CreatedAt.AddMinutes(10) <= DateTime.Now)
+            if (lastSubmission.CreatedAt.AddMonths(6) <= DateTime.Now)
             {
                 return false; // Registro ha expirado
             }

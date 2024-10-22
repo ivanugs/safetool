@@ -23,15 +23,25 @@
 
 @foreach (var item in Model)
 {
-    <div class="d-flex flex-column gap-5">
-        <p><strong>@Html.DisplayNameFor(model => item.EmailAccount):</strong> @Html.DisplayFor(modelItem => item.EmailAccount)</p>
-        <p><strong>@Html.DisplayNameFor(model => item.EmailAccountDisplayName):</strong> @Html.DisplayFor(modelItem => item.EmailAccountDisplayName)</p>
-        <p><strong>@Html.DisplayNameFor(model => item.EmailAccountPassword):</strong> @Html.DisplayFor(modelItem => item.EmailAccountPassword)</p>
-        <p><strong>@Html.DisplayNameFor(model => item.EmailAccountUser):</strong> @Html.DisplayFor(modelItem => item.EmailAccountUser)</p>
-        <p><strong>@Html.DisplayNameFor(model => item.EmailPort):</strong> @Html.DisplayFor(modelItem => item.EmailPort)</p>
-        <p><strong>@Html.DisplayNameFor(model => item.EmailServer):</strong> @Html.DisplayFor(modelItem => item.EmailServer)</p>
-        <p><strong>@Html.DisplayNameFor(model => item.EmailSsl):</strong> @Html.DisplayFor(modelItem => item.EmailSsl)</p>
-
-        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+    <div class="d-flex flex-row gap-5 mb-5">
+        <div class="d-flex flex-column gap-5">
+            <p><strong>@Html.DisplayNameFor(model => item.EmailAccount):</strong></p>
+            <p><strong>@Html.DisplayNameFor(model => item.EmailAccountDisplayName):</strong></p>
+            <p><strong>@Html.DisplayNameFor(model => item.EmailAccountPassword):</strong></p>
+            <p><strong>@Html.DisplayNameFor(model => item.EmailAccountUser):</strong></p>
+            <p><strong>@Html.DisplayNameFor(model => item.EmailPort):</strong></p>
+            <p><strong>@Html.DisplayNameFor(model => item.EmailServer):</strong></p>
+            <p><strong>@Html.DisplayNameFor(model => item.EmailSsl):</strong></p>
+        </div>
+        <div class="d-flex flex-column gap-5">
+            <p>@Html.DisplayFor(modelItem => item.EmailAccount)</p>
+            <p>@Html.DisplayFor(modelItem => item.EmailAccountDisplayName)</p>
+            <p>@Html.DisplayFor(modelItem => item.EmailAccountPassword)</p>
+            <p>@Html.DisplayFor(modelItem => item.EmailAccountUser)</p>
+            <p>@Html.DisplayFor(modelItem => item.EmailPort)</p>
+            <p>@Html.DisplayFor(modelItem => item.EmailServer)</p>
+            <p>@Html.DisplayFor(modelItem => item.EmailSsl)</p>
+        </div>
     </div>
+    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
 }

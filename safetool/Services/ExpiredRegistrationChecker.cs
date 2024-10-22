@@ -32,7 +32,7 @@ namespace safetool.Services
                 }
 
                 // Ejecutar este chequeo cada 24 horas (puedes ajustar este valor)
-                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+                await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
             }
         }
     }

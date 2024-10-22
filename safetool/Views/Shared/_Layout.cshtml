@@ -17,7 +17,7 @@
             <img width="200" src="~/images/branding/Continental_Logo_Tagline_White.png" alt="Logo Continental" />
         </div>
         <div class="d-flex justify-content-center align-content-center" style="width:250px">
-            <h1 class="display-6 header__title">SafeTool</h1>
+            <h1 class="display-6 header__title">Safetool</h1>
         </div>
         @if (User.Identity.IsAuthenticated)
         {
@@ -36,11 +36,10 @@
         }
     </header>
 
-    <div class="">
-        <main role="main" class="pb-3 main__section">
-            @RenderBody()
-        </main>
-    </div>
+
+    <main role="main" class="pb-3 main__section">
+        @RenderBody()
+    </main>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

@@ -21,7 +21,7 @@ namespace safetool.Services
             // Obtener los registros que tienen más de 6 meses y que aún no han sido notificados
             var expiredSubmissions = await _context.FormSubmissions
                 .Include(f => f.Device)
-                .Where(f => f.CreatedAt.AddMinutes(10) <= DateTime.Now)
+                .Where(f => f.CreatedAt.AddMonths(6) <= DateTime.Now)
                 .ToListAsync();
 
             foreach (var submission in expiredSubmissions)
