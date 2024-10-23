@@ -54,7 +54,7 @@
                 Modelo del equipo
             </th>
             <th scope="col">
-                Creado
+                Fecha de registro
             </th>
         </tr>
     </thead>
@@ -89,17 +89,24 @@
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-custom @prevDisabled">
-    Anterior
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-custom @nextDisabled">
-    Siguiente
-</a>
+@if (Model.Count > 15)
+{
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-pageNumber="@(Model.PageIndex - 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-custom @prevDisabled">
+        Anterior
+    </a>
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-pageNumber="@(Model.PageIndex + 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-custom @nextDisabled">
+        Siguiente
+    </a>
+}
+
+<div class="mt-4">
+    <a href="@Url.Action("ExportToExcel", "Export")" class="btn btn-custom">Exportar a Excel</a>
+</div>

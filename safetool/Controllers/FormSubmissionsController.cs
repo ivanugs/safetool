@@ -95,25 +95,41 @@ namespace safetool.Controllers
 
             if (ModelState.IsValid)
             {
-                // Asignar el DeviceID al formSubmission
-                formSubmission.DeviceID = deviceID;
-                formSubmission.EmployeeUID = employeeUID;
-                formSubmission.EmployeeName = employeeName;
-                formSubmission.EmployeeEmail = email;
-                formSubmission.CreatedAt = DateTime.Now;
+                // Buscar si ya existe un registro para este usuario y dispositivo
+                var existingSubmission = await _context.FormSubmissions
+                    .FirstOrDefaultAsync(f => f.DeviceID == deviceID && f.EmployeeUID == employeeUID);
 
-                // Guardar en la base de datos
-                _context.Add(formSubmission);
+                if (existingSubmission != null)
+                {
+                    // Si existe un registro, actualiza la información en lugar de crear uno nuevo
+                    existingSubmission.EmployeeName = employeeName;
+                    existingSubmission.EmployeeEmail = email;
+                    existingSubmission.CreatedAt = DateTime.Now;
+
+                    _context.Update(existingSubmission);  // Actualizamos el registro
+                }
+                else
+                {
+                    // Si no existe, creamos un nuevo registro
+                    formSubmission.DeviceID = deviceID;
+                    formSubmission.EmployeeUID = employeeUID;
+                    formSubmission.EmployeeName = employeeName;
+                    formSubmission.EmployeeEmail = email;
+                    formSubmission.CreatedAt = DateTime.Now;
+
+                    _context.Add(formSubmission);  // Creamos un nuevo registro
+                }
+
+                // Guardar los cambios en la base de datos
                 await _context.SaveChangesAsync();
 
                 // Redirigir de vuelta a la vista de detalles del dispositivo
                 return RedirectToAction("Index", "Devices");
             }
 
-            Console.WriteLine("No es valido");
-
             // Si hay un error, regresar a la vista de detalles del dispositivo
             return RedirectToAction("Details", "Devices", new { id = deviceID });
         }
+
     }
 }

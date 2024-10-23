@@ -7,9 +7,14 @@
 }
 
 <style>
-    span, #titles {
+    span{
         font-weight: 500;
         color: black !important;
+    }
+
+    .titles{
+        font-weight: 500;
+        color: var(--var-color-main) !important;
     }
 
     .light {
@@ -33,6 +38,7 @@
     #content {
         font-weight:400;
         color: var(--var-color-main-font);
+        text-align: justify;
     }
 </style>
 
@@ -43,110 +49,144 @@
     <h1 class="fs-3">Detalles</h1>
 </div>
 
-<section class="d-flex flex-column justify-content-center align-items-center gap-3 w-100">
-    @*Seccion de informacion general*@
-    <div class="d-flex flex-column fs-6 mb-4 gap-4">
-        <p id="titles" class="fs-5">@Model.Name</p>
-        <div class="d-flex flex-row">
-            <div class="me-5">
-                <img class="rounded" src="@Model.Image" alt="Device Image" width="250" />
-            </div>
-            <div id="content" class="d-flex flex-column justify-content-between p-1">
-                <p><span>Modelo:</span> @Model.Model</p>
-                <p><span>Área:</span> @Model.Area.Name</p>
-                <p><span>Tipo de equipo:</span> @Model.DeviceType.Name</p>
-                <p><span>Función:</span> @Model.Function</p>
-                <p><span>Función específica:</span> @Model.SpecificFunction</p>
-                <p><span>Número de operadores:</span> @Model.Operators</p>
-                <p><span>Último mantenimiento:</span> @Model.LastMaintenance</p>
-            </div>
-        </div>
-        
-    </div>
-
-    @*Seccion de paro de emergencia*@
-    @if (!string.IsNullOrEmpty(Model.EmergencyStopImage))
-    {
-        <div class="d-flex flex-column justify-content-center align-items-center mb-4">
-            <div class="fs-5 mb-3" style="font-weight:500">
-                Paro de emergencia
-            </div>
-            <div>
-                <img class="rounded" src="@Model.EmergencyStopImage" alt="Emergency Stop Image" width="250" />
+<section class="d-flex flex-column gap-5 w-100">
+    <div class="d-flex flex-row justify-content-around">
+        @*Seccion de informacion general*@
+        <div class="d-flex flex-column fs-6 gap-4">
+            <p class="fs-5 titles">@Model.Name</p>
+            <div class="d-flex flex-row">
+                <div class="me-2">
+                    <img class="rounded" src="@Model.Image" alt="Device Image" width="300" />
+                </div>
+                <div id="content" class="d-flex flex-column justify-content-between p-1" style="max-width:400px">
+                    <p><span>Modelo:</span> @Model.Model</p>
+                    <p><span>Área:</span> @Model.Area.Name</p>
+                    <p><span>Tipo de equipo:</span> @Model.DeviceType.Name</p>
+                    <p><span>Función:</span> @Model.Function</p>
+                    <p><span>Función específica:</span> @Model.SpecificFunction</p>
+                    <p><span>Número de operadores:</span> @Model.Operators</p>
+                    <p><span>Último mantenimiento:</span> @Model.LastMaintenance</p>
+                </div>
             </div>
         </div>
-    }
-
-    @*Seccion de dispositivo de seguridad*@
-    @if (!string.IsNullOrEmpty(Model.TypeSafetyDevice))
-    {
-        <div class="d-flex flex-column justify-content-center align-items-center mb-4">
-            <div class="fs-5 mb-3" style="font-weight:500">
-                Dispositivo de seguridad
+        @*Seccion de riesgos y epp*@
+        <div class="d-flex flex-column justify-content-between align-items-center gap-3">
+            @*Seccion de riesgos*@
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <div class="fs-5 mb-2 titles" style="font-weight:500">
+                    Riesgos de seguridad
+                </div>
+                <div class="d-flex flex-row gap-2">
+                    @foreach (var risk in Model.Risks)
+                    {
+                        <div id="content" style="width: 120px;" class="d-flex flex-column align-items-center gap-2">
+                            <img class="rounded" src="@risk.Image" alt="@risk.Name" width="90" height="80"/>
+                            <p class="text-center fs-6">@risk.Name</p>
+                        </div>
+                    }
+                </div>
             </div>
-            <div id="content" class="d-flex flex-column justify-content-between p-1 fs-6 gap-2">
-                <p><span>Tipo de dispositivo:</span> @Model.TypeSafetyDevice</p>
-                <p><span>Función del dispositivo:</span> @Model.FunctionSafetyDevice</p>
+            @*Seccion de epp*@
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <div class="fs-5 mb-2 titles" style="font-weight:500">
+                    Equipo de protección personal necesario
+                </div>
+                <div class="d-flex flex-row gap-2">
+                    @foreach (var ppe in Model.PPEs)
+                    {
+                        <div id="content" style="width: 120px;" class="d-flex flex-column align-items-center gap-2">
+                            <img class="rounded" src="@ppe.Image" alt="@ppe.Name" width="80" height="80"/>
+                            <p class="text-center fs-6">@ppe.Name</p>
+                        </div>
+                    }
+                </div>
             </div>
-        </div>
-    }
-
-    @*Seccion de riesgos*@
-    <div class="d-flex flex-column justify-content-center align-items-center mb-4">
-        <div class="fs-5 mb-3" style="font-weight:500">
-            Riesgos de seguridad
-        </div>
-        <div class="d-flex flex-row">
-            @foreach (var risk in Model.Risks)
+            @*Seccion de dispositivo de seguridad*@
+            @if (!string.IsNullOrEmpty(Model.TypeSafetyDevice))
             {
-                <div id="content" style="width: 150px;" class="d-flex flex-column align-items-center gap-2">
-                    <img class="rounded" src="@risk.Image" alt="@risk.Name" width="100"/>
-                    <p class="text-center fs-6">@risk.Name</p>
+                <div class="d-flex flex-column justify-content-center align-items-center mb-4">
+                    <div class="fs-5 mb-2 titles" style="font-weight:500">
+                        Dispositivo de seguridad
+                    </div>
+                    <div id="content" class="d-flex flex-column justify-content-between p-1 fs-6 gap-2 text-center" style="max-width:400px">
+                        <p>@Model.TypeSafetyDevice</p>
+                        <p><span>Función del dispositivo</span></p>
+                        <p>@Model.FunctionSafetyDevice</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                @*Seccion de nievl de riesgo*@
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                    <div class="fs-5 mb-2 titles" style="font-weight:500">
+                        Nivel de riesgo
+                    </div>
+                    <div class="">
+                        <div id="content" class="d-flex flex-column gap-2 fs-6 p-1 justify-content-center align-items-center" style="width:fit-content">
+                            @if (Model.RiskLevel.Level == "Alto")
+                            {
+                                <div class="light red" title="Alto Riesgo"></div>
+                                <p>@Html.DisplayFor(model => model.RiskLevel.Level)</p>
+                            }
+                            @if (Model.RiskLevel.Level == "Medio")
+                            {
+                                <div class="light yellow" title="Riesgo Moderado"></div>
+                                <p>@Html.DisplayFor(model => model.RiskLevel.Level)</p>
+                            }
+                            @if (Model.RiskLevel.Level == "Bajo")
+                            {
+                                <div class="light green" title="Bajo Riesgo"></div>
+                                <p>@Html.DisplayFor(model => model.RiskLevel.Level)</p>
+                            }
+                        </div>
+                    </div>
                 </div>
             }
         </div>
     </div>
 
-    @*Seccion de epp*@
-    <div class="d-flex flex-column justify-content-center align-items-center mb-4">
-        <div class="fs-5 mb-3" style="font-weight:500">
-            Equipo de protección personal necesario
-        </div>
-        <div class="d-flex flex-row">
-            @foreach (var ppe in Model.PPEs)
-            {
-                <div id="content" style="width: 150px;" class="d-flex flex-column align-items-center gap-2">
-                    <img class="rounded" src="@ppe.Image" alt="@ppe.Name" width="100" />
-                    <p class="text-center fs-6">@ppe.Name</p>
+    <div class="d-flex flex-row gap-4 justify-content-around">
+        @*Seccion de paro de emergencia*@
+        @if (!string.IsNullOrEmpty(Model.EmergencyStopImage))
+        {
+            <div class="d-flex flex-column justify-content-center align-items-center mb-4">
+                <div class="fs-5 mb-3 titles" style="font-weight:500">
+                    Paro de emergencia
                 </div>
-            }
-        </div>
-    </div>
-
-    @*Seccion de nievl de riesgo*@
-    <div class="d-flex flex-column mb-4 justify-content-center align-items-center">
-        <div class="fs-5 mb-2" style="font-weight:500">
-            Nivel de riesgo
-        </div>
-        <div class="">
-            <div id="content" class="d-flex flex-column gap-2 fs-6 p-1 justify-content-center align-items-center" style="width:fit-content">
-                @if (Model.RiskLevel.Level == "Alto")
-                {
-                    <div class="light red" title="Alto Riesgo"></div>
-                    <p>@Html.DisplayFor(model => model.RiskLevel.Level)</p>
-                }
-                @if (Model.RiskLevel.Level == "Medio")
-                {
-                    <div class="light yellow" title="Riesgo Moderado"></div>
-                    <p>@Html.DisplayFor(model => model.RiskLevel.Level)</p>
-                }
-                @if (Model.RiskLevel.Level == "Bajo")
-                {
-                    <div class="light green" title="Bajo Riesgo"></div>
-                    <p>@Html.DisplayFor(model => model.RiskLevel.Level)</p>
-                }
+                <div>
+                    <img class="rounded" src="@Model.EmergencyStopImage" alt="Emergency Stop Image" width="250" />
+                </div>
             </div>
-        </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.TypeSafetyDevice))
+        {
+            @*Seccion de nievl de riesgo*@
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <div class="fs-5 mb-2 titles" style="font-weight:500">
+                    Nivel de riesgo
+                </div>
+                <div class="">
+                    <div id="content" class="d-flex flex-column gap-2 fs-6 p-1 justify-content-center align-items-center" style="width:fit-content">
+                        @if (Model.RiskLevel.Level == "Alto")
+                        {
+                            <div class="light red" title="Alto Riesgo"></div>
+                            <p>@Html.DisplayFor(model => model.RiskLevel.Level)</p>
+                        }
+                        @if (Model.RiskLevel.Level == "Medio")
+                        {
+                            <div class="light yellow" title="Riesgo Moderado"></div>
+                            <p>@Html.DisplayFor(model => model.RiskLevel.Level)</p>
+                        }
+                        @if (Model.RiskLevel.Level == "Bajo")
+                        {
+                            <div class="light green" title="Bajo Riesgo"></div>
+                            <p>@Html.DisplayFor(model => model.RiskLevel.Level)</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 
     @*Seccion de formulario*@
@@ -164,9 +204,11 @@
                         <input type="hidden" name="employeeName" value="@User.Claims.FirstOrDefault(c => c.Type == "FullName")?.Value" />
 
                         <div id="content" class="form-text text-wrap mb-4">
-                            Al enviar este formulario, usted confirma que ha comprendido el análisis de riesgo relacionado con la herramienta o maquinaria especificada.
-                            Este formulario NO constituye un permiso para el uso de dicho equipo y NO se considera una capacitación para su operación.
-                            Para cualquier duda o inquietud adicional, por favor diríjase al equipo de ESH local.
+                            <p class="lh-sm">
+                                Al enviar este formulario, usted confirma que ha comprendido el análisis de riesgo relacionado con la herramienta o maquinaria especificada.
+                                Este formulario NO constituye un permiso para el uso de dicho equipo y NO se considera una capacitación para su operación.
+                                Para cualquier duda o inquietud adicional, por favor diríjase al equipo de ESH local.
+                            </p>
                         </div>
                         @if (isRegistered == true)
                         {

@@ -10,23 +10,35 @@
 
 <style>
     #card {
+        transition: all 0.2s ease-in-out;
         box-sizing: border-box;
         background: #b2b2b2;
         color: black !important;
         width: 400px;
         height: 65px;
+        cursor: pointer;
+    }
+
+    /* .card_success{
+        background-color: yellowgreen !important;
+    } */
+
+    #register__check svg{
+        width: 40px;
+        height: 40px;
+        color: green;
     }
     
     #card a{
-        color: black;
+        color: #585858;
     }
 
     #card:hover {
-        background: var(--var-color-main);
+        background: var(--var-color-main) !important;
     }
 
     #card:hover a{
-        color: white;
+        color: white !important;
     }
 </style>
 
@@ -67,29 +79,51 @@
             @foreach (var device in Model)
             {
                 var isRegistered = registeredDevices != null && registeredDevices.Contains(device.ID); // Verificar si el dispositivo ya fue registrado
-
-                <div id="card" class="d-flex align-items-center px-3 justify-content-between rounded-3">
-                    <a style="text-decoration: none;" class="w-100 d-flex flex-row gap-2" asp-action="Details" asp-route-id="@device.ID">
-                        <div class="d-flex flex-column w-100 gap-1">
-                            <div style="font-size:18px" class="overflow-hidden text-nowrap text-capitalize">
-                                <p class="text-nowrap text-truncate">@device.Name</p>
+                @if (isRegistered)
+                {
+                    <div id="card" class="d-flex align-items-center px-3 justify-content-between rounded-3 card_success">
+                        <a style="text-decoration: none;" class="w-100 d-flex flex-row gap-2" asp-action="Details" asp-route-id="@device.ID">
+                            <div class="d-flex flex-row w-100 gap-2">
+                                <div class="d-flex flex-column w-100 gap-1">
+                                    <div style="font-size:18px" class="overflow-hidden text-nowrap text-capitalize">
+                                        <p class="text-nowrap text-truncate">@device.Name</p>
+                                    </div>
+                                    <div style="font-weight:300; font-size:16px" class="d-flex align-items-center gap-5">
+                                        <p class="text-nowrap">@device.Model</p>
+                                        <p class="text-nowrap text-truncate">@device.Area.Name</p>
+                                    </div>
+                                </div>
+                                <div id="register__check" class="d-flex justify-content-center align-items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M8 12l2.5 2.5L16 9"></path>
+                                    </svg>
+                                </div>
                             </div>
-                            <div style="font-weight:300; font-size:16px" class="d-flex align-items-center gap-5">
-                                <p class="text-nowrap">@device.Model</p>
-                                <p class="text-nowrap text-truncate">@device.Area.Name</p>
-                                @if (isRegistered)
-                                {
-                                    <span class="text-success">✔️</span>
-                                }
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div id="card" class="d-flex align-items-center px-3 justify-content-between rounded-3">
+                        <a style="text-decoration: none;" class="w-100 d-flex flex-row gap-2" asp-action="Details" asp-route-id="@device.ID">
+                            <div class="d-flex flex-column w-100 gap-1">
+                                <div style="font-size:18px" class="overflow-hidden text-nowrap text-capitalize">
+                                    <p class="text-nowrap text-truncate">@device.Name</p>
+                                </div>
+                                <div style="font-weight:300; font-size:16px" class="d-flex align-items-center gap-5">
+                                    <p class="text-nowrap">@device.Model</p>
+                                    <p class="text-nowrap text-truncate">@device.Area.Name</p>
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                </div>
+                        </a>
+                    </div>
+                }
             }
         }
         else
         {
-            <p class="text-warning fs-5 mb-5">No se encontraron dispositivos.</p>
+            <p class="text-warning fs-5 mb-5">No se encontraron dispositivos</p>
         }
     </div>
 </div>

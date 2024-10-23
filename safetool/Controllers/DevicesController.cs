@@ -41,7 +41,7 @@ namespace safetool.Controllers
             }
 
             // Verificar si han pasado más de 6 meses desde la fecha de registro
-            if (lastSubmission.CreatedAt.AddMonths(6) <= DateTime.Now)
+            if (lastSubmission.CreatedAt.AddDays(6) <= DateTime.Now)
             {
                 return false; // Registro ha expirado
             }
@@ -62,6 +62,7 @@ namespace safetool.Controllers
             // Consultar los dispositivos incluyendo las relaciones de navegación
             IQueryable<Device> devices = _context.Devices
                 .Include(d => d.Area)
+                .Include(d => d.Area.Location)
                 .Where(d => d.Area.Location.Active == true)
                 .Where(d => d.Area.Active == true)
                 .Where(d => d.Active == true);
