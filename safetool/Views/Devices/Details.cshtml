@@ -233,14 +233,25 @@
 
     <form id="EmailForm" asp-controller="Email" asp-action="SendEmail" method="post">
         <input type="hidden" name="deviceID" value="@Model.ID" />
-        <input type="hidden" name="subject" value="Registro exitoso" />
-        <input type="hidden" name="body" value="Usted ha realizado exitosamente el registro de @Model.Name." />
+        <input type="hidden" name="subject" value="Safetool - Registro exitoso" />
+        <input type="hidden" name="body" id="emailBody" />
     </form>
 </section>
 
 @section Scripts {
     <script>
         function SendForm() {
+            var fullName = '@User.Claims.FirstOrDefault(c => c.Type == "FullName")?.Value';
+            var deviceName = '@Model.Name';
+            var emailBody = `
+                Estimado ${fullName}, <br>
+                Usted ha realizado exitosamente el registro del equipo: <strong>${deviceName}</strong>.
+                <br><br>Gracias por su atención.<br>Saludos cordiales,<br>Equipo de ESH
+            `;
+
+            // Establecer el cuerpo del correo en el campo oculto
+            document.getElementById('emailBody').value = emailBody;
+
             Swal.fire({
                 title: "Registro exitoso!",
                 text: "Recibirá un correo confirmando su registro!",
@@ -248,8 +259,10 @@
                 showConfirmButton: false,
                 timer: 2000
             }).then(() => {
+                // Enviar el formulario de correo primero
                 document.getElementById('EmailForm').submit();
-
+                
+                // Luego enviar el formulario de registro después de un pequeño retraso
                 setTimeout(function () {
                     document.getElementById('EmployeeForm').submit();
                 }, 500);

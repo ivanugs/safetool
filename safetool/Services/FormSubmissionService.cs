@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 using safetool.Data;
 using System.Diagnostics.Metrics;
@@ -30,9 +31,13 @@ namespace safetool.Services
                 var userName = submission.EmployeeName;
                 var userEmail = submission.EmployeeEmail;
                 var device = submission.Device.Name;
+                var deviceID = submission.Device.ID;
 
-                string subject = "Tu registro ha vencido";
-                string body = $"Hola {userName},\n\nTu registro para el equipo '{device}' ha vencido. Te invitamos a registrarte nuevamente.";
+                string subject = "Safetool - Tu registro ha vencido";
+                string body = $"Estimado {userName}, <br>" +
+                    $" Tu registro para el equipo '{device}' ha vencido. <br>" +
+                    $"Te invitamos a registrarte nuevamente en el siguiente enlace <a href='{deviceID}'>Safetool</a>." +
+                    $"<br><br>Gracias por su atención.<br>Saludos cordiales,<br>Equipo de ESH";
 
                 // Enviar correo
                 await _emailService.SendEmailAsync(userEmail, subject, body);
