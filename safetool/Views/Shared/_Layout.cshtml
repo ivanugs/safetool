@@ -12,6 +12,7 @@
     <link href="~/css/sweetalert2.min.css" rel="stylesheet" />
 </head>
 <body>
+    <div class="bg"></div>
     <header role="heading" class="d-flex flex-row justify-content-between align-items-center px-3 header__section">
         <div class="d-flex flex-row justify-content-center align-items-center align-self-center" style="width:250px">
             <img width="200" src="~/images/branding/Continental_Logo_Tagline_White.png" alt="Logo Continental" />
@@ -38,7 +39,9 @@
 
 
     <main role="main" class="pb-3 main__section">
-        @RenderBody()
+        <section class="p-3 mb-2 render__section">
+            @RenderBody()
+        </section>
     </main>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

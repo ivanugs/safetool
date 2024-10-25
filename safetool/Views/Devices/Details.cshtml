@@ -37,7 +37,7 @@
 
     #content {
         font-weight:400;
-        color: var(--var-color-main-font);
+        color: #585858;
         text-align: justify;
     }
 </style>
@@ -231,27 +231,15 @@
         </div>
     }
 
-    <form id="EmailForm" asp-controller="Email" asp-action="SendEmail" method="post">
+    <form id="EmailForm" asp-controller="Email" asp-action="SendEmailSuccess" method="post">
         <input type="hidden" name="deviceID" value="@Model.ID" />
-        <input type="hidden" name="subject" value="Safetool - Registro exitoso" />
-        <input type="hidden" name="body" id="emailBody" />
+        <input type="hidden" name="subject" value="Safetool - Registro Exitoso" />
     </form>
 </section>
 
 @section Scripts {
     <script>
         function SendForm() {
-            var fullName = '@User.Claims.FirstOrDefault(c => c.Type == "FullName")?.Value';
-            var deviceName = '@Model.Name';
-            var emailBody = `
-                Estimado ${fullName}, <br>
-                Usted ha realizado exitosamente el registro del equipo: <strong>${deviceName}</strong>.
-                <br><br>Gracias por su atención.<br>Saludos cordiales,<br>Equipo de ESH
-            `;
-
-            // Establecer el cuerpo del correo en el campo oculto
-            document.getElementById('emailBody').value = emailBody;
-
             Swal.fire({
                 title: "Registro exitoso!",
                 text: "Recibirá un correo confirmando su registro!",

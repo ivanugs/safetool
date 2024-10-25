@@ -9,35 +9,40 @@
 }
 
 <style>
-    #card {
-        transition: all 0.2s ease-in-out;
+    .card__device {
+        transition: all 0.1s ease-in;
         box-sizing: border-box;
-        background: #b2b2b2;
-        color: black !important;
         width: 400px;
         height: 65px;
         cursor: pointer;
+        background-color: white;
     }
-
-    /* .card_success{
-        background-color: yellowgreen !important;
-    } */
 
     #register__check svg{
         width: 40px;
         height: 40px;
         color: green;
     }
+
+    .card__name{
+        font-size: 18px;
+        color: var(--var-color-main);
+    }
     
-    #card a{
+    .card__device a{
+        text-decoration: none;
         color: #585858;
     }
 
-    #card:hover {
+    .card__device:hover {
         background: var(--var-color-main) !important;
     }
 
-    #card:hover a{
+    .card__device:hover a{
+        color: white !important;
+    }
+
+    .card__device:hover .card__name{
         color: white !important;
     }
 </style>
@@ -54,13 +59,13 @@
     <form asp-action="Index" method="get">
         <div class="d-flex flex-row gap-4 justify-content-between" style="width: 800px">
             <div class="" style="min-width:300px;">
-                <label for="LocationID" class="form-label">Localidad:</label>
+                <label for="LocationID" class="form-label fs-5">Localidad:</label>
                 <select id="locations" name="LocationID" class="form-select" asp-items="ViewBag.Locations">
                     <option value="" disabled selected>Selecciona una localidad</option>
                 </select>
             </div>
             <div class="" style="min-width:300px;">
-                <label for="AreaID" class="form-label">Área:</label>
+                <label for="AreaID" class="form-label fs-5">Área:</label>
                 <select id="areas" name="AreaID" class="form-select">
                     <option value="">Selecciona el área</option>
                 </select>
@@ -73,7 +78,7 @@
 </div>
 
 <div class="w-100 d-flex justify-content-center mb-5">
-    <div style="width:980px;" class="d-flex flex-row align-content-center justify-content-center gap-4 p-1 flex-wrap">
+    <div style="width:980px;" class="d-flex flex-row align-content-center justify-content-center gap-5 p-1 flex-wrap">
         @if (Model.Any())
         {
             @foreach (var device in Model)
@@ -81,11 +86,11 @@
                 var isRegistered = registeredDevices != null && registeredDevices.Contains(device.ID); // Verificar si el dispositivo ya fue registrado
                 @if (isRegistered)
                 {
-                    <div id="card" class="d-flex align-items-center px-3 justify-content-between rounded-3 card_success">
-                        <a style="text-decoration: none;" class="w-100 d-flex flex-row gap-2" asp-action="Details" asp-route-id="@device.ID">
+                    <div class="d-flex align-items-center px-3 justify-content-between rounded-3 card_success shadow-lg card__device">
+                        <a class="w-100 d-flex flex-row gap-2" asp-action="Details" asp-route-id="@device.ID">
                             <div class="d-flex flex-row w-100 gap-2">
                                 <div class="d-flex flex-column w-100 gap-1">
-                                    <div style="font-size:18px" class="overflow-hidden text-nowrap text-capitalize">
+                                    <div class="overflow-hidden text-nowrap text-capitalize card__name">
                                         <p class="text-nowrap text-truncate">@device.Name</p>
                                     </div>
                                     <div style="font-weight:300; font-size:16px" class="d-flex align-items-center gap-5">
@@ -105,10 +110,10 @@
                 }
                 else
                 {
-                    <div id="card" class="d-flex align-items-center px-3 justify-content-between rounded-3">
-                        <a style="text-decoration: none;" class="w-100 d-flex flex-row gap-2" asp-action="Details" asp-route-id="@device.ID">
+                    <div class="d-flex align-items-center px-3 justify-content-between rounded-3 card_success shadow-lg card__device">
+                        <a class="w-100 d-flex flex-row gap-2" asp-action="Details" asp-route-id="@device.ID">
                             <div class="d-flex flex-column w-100 gap-1">
-                                <div style="font-size:18px" class="overflow-hidden text-nowrap text-capitalize">
+                                <div class="overflow-hidden text-nowrap text-capitalize card__name">
                                     <p class="text-nowrap text-truncate">@device.Name</p>
                                 </div>
                                 <div style="font-weight:300; font-size:16px" class="d-flex align-items-center gap-5">
