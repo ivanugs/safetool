@@ -57,6 +57,7 @@ namespace safetool.Controllers
             }
 
             int pageSize = 15;
+            ViewBag.TotalRisks = await risks.CountAsync();
             return View(await PaginatedList<Risk>.CreateAsync(risks.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
@@ -102,20 +103,32 @@ namespace safetool.Controllers
 
                 if (risk.ImageFile != null)
                 {
-                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/risks/");
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + risk.ImageFile.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    // Validar si el archivo es una imagen valida
+                    var fileType = risk.ImageFile.ContentType.ToLower();
+                    var allowedFileTypes = new[] { "image/jpeg", "image/png", "image/jpg" };
 
-                    // Validar que la carpeta existe
-                    if (!Directory.Exists(uploadsFolder))
+                    if (!allowedFileTypes.Contains(fileType))
                     {
-                        Directory.CreateDirectory(uploadsFolder);
+                        ModelState.AddModelError("ImageFile", "Solo se permiten archivos con extensión .jpg, .jpeg o .png");
+                        return View(risk);
                     }
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    else
                     {
-                        await risk.ImageFile.CopyToAsync(fileStream);
-                    };
+                        string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/risks/");
+                        uniqueFileName = Guid.NewGuid().ToString() + "_" + risk.ImageFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        // Validar que la carpeta existe
+                        if (!Directory.Exists(uploadsFolder))
+                        {
+                            Directory.CreateDirectory(uploadsFolder);
+                        }
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await risk.ImageFile.CopyToAsync(fileStream);
+                        };
+                    } 
                 }
 
                 // Guardar los datos del modelo en la base de datos
@@ -174,33 +187,45 @@ namespace safetool.Controllers
             }
             else
             {
-                // Obtener la ruta de la imagen anterior que sera reemplazada
-                var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot" + existingRisk.Image);
-                // Logica para manejar la nueva imagen
-                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/risks/");
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + risk.ImageFile.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                // Validar si el archivo es una imagen valida
+                var fileType = risk.ImageFile.ContentType.ToLower();
+                var allowedFileTypes = new[] { "image/jpeg", "image/png", "image/jpg" };
 
-                // Validar si la carpeta de imagenes de risks existe
-                if (!Directory.Exists(uploadsFolder))
+                if (!allowedFileTypes.Contains(fileType))
                 {
-                    Directory.CreateDirectory(uploadsFolder); //Si no existe la carpeta, la crea
+                    ModelState.AddModelError("ImageFile", "Solo se permiten archivos con extensión .jpg, .jpeg o .png");
+                    return View(risk);
                 }
-
-                // Guardar la nueva imagen
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                else
                 {
-                    await risk.ImageFile.CopyToAsync(fileStream);
-                }
+                    // Obtener la ruta de la imagen anterior que sera reemplazada
+                    var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot" + existingRisk.Image);
+                    // Logica para manejar la nueva imagen
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/risks/");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + risk.ImageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                // Validar que exista la imagen que se va a reemplezar
-                if (System.IO.File.Exists(oldImagePath))
-                {
-                    System.IO.File.Delete(oldImagePath); // Si existe, elimina la imagen
-                }
+                    // Validar si la carpeta de imagenes de risks existe
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder); //Si no existe la carpeta, la crea
+                    }
 
-                // Actualizar la propiedad Image con la nueva ruta
-                risk.Image = "/images/risks/" + uniqueFileName;
+                    // Guardar la nueva imagen
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await risk.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                    // Validar que exista la imagen que se va a reemplezar
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath); // Si existe, elimina la imagen
+                    }
+
+                    // Actualizar la propiedad Image con la nueva ruta
+                    risk.Image = "/images/risks/" + uniqueFileName;
+                }
             }
 
             // Actualizar los campos

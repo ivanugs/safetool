@@ -35,7 +35,8 @@
                 <label asp-for="ImageFile" class="form-label">Imagen:</label>
                 <br />
                 <img src="@Model.Image" alt="Imagen del EPP" width="200" class="mb-2" />
-                <input asp-for="ImageFile" class="form-control" type="file" id="ImageFile" onchange="showPreview(event);" />
+                <input asp-for="ImageFile" class="form-control" type="file" id="ImageFile" onchange="showPreview(event);" accept=".jpg, .jpeg, .png" aria-describedby="imagenHelp" />
+                <div id="imagenHelp" class="form-text">Por favor, solo ingrese imagenes con extension .jpg, .jpeg, .png.</div>
                 <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="mb-3">

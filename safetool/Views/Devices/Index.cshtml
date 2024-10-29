@@ -128,12 +128,12 @@
         }
         else
         {
-            <p class="text-warning fs-5 mb-5">No se encontraron dispositivos</p>
+            <p class="text-black fs-5 mb-4">No se encontraron dispositivos</p>
         }
     </div>
 </div>
 
-@if (Model.Count > 10)
+@if (ViewBag.TotalDevices > 10)
 {
     <div class="d-flex w-100 justify-content-center gap-2">
         <a asp-controller="Devices" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" class="btn btn-custom @prevDisabled">Anterior</a>

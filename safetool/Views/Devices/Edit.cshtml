@@ -25,12 +25,16 @@
             <input type="hidden" asp-for="ID" />
             <div class="mb-3">
                 <label asp-for="LocationID" class="form-label">Localidad:</label>
-                <select asp-for="LocationID" class="form-select" id="locations" asp-items="ViewBag.Locations"></select>
+                <select asp-for="LocationID" class="form-select" id="locations" asp-items="ViewBag.Locations">
+                    <option value="" disabled>Selecciona una localidad</option>
+                </select>
                 <span asp-validation-for="LocationID" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="AreaID" class="form-label">Área:</label>
-                <select asp-for="AreaID" class="form-select" id="areas" asp-items="ViewBag.Areas"></select>
+                <select asp-for="AreaID" class="form-select" id="areas" asp-items="ViewBag.Areas">
+                    <option value="" disabled selected>Selecciona el área</option>
+                </select>
                 <span asp-validation-for="AreaID" class="text-danger"></span>
             </div>
             <div class="mb-3">
@@ -47,7 +51,8 @@
                 <label asp-for="ImageFile" class="form-label">Imagen:</label>
                 <br />
                 <img src="@Model.Image" alt="Imagen del equipo" width="200" class="mb-2" />
-                <input asp-for="ImageFile" class="form-control" type="file" id="ImageFile" onchange="showPreview(event);" />
+                <input asp-for="ImageFile" class="form-control" type="file" id="ImageFile" onchange="showPreview(event);" accept=".jpg, .jpeg, .png" aria-describedby="imagenHelp" />
+                <div id="imagenHelp" class="form-text">Por favor, solo ingrese imagenes con extension .jpg, .jpeg, .png.</div>
                 <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="mb-3">
@@ -84,10 +89,11 @@
                 <span asp-validation-for="LastMaintenance" class="text-danger"></span>
             </div>
             <div class="mb-3">
-                <label asp-for="ImageFileES" class="form-label">Imagen:</label>
+                <label asp-for="ImageFileES" class="form-label">Imagen del paro de emergencia: (Solo sí aplica)</label>
                 <br />
-                <img src="@Model.EmergencyStopImage" alt="Imagen del equipo" width="200" class="mb-2" />
-                <input asp-for="ImageFileES" class="form-control" type="file" id="ImageFileES" onchange="showPreviewES(event);" />
+                <img src="@Model.EmergencyStopImage" alt="Imagen del paro de emergencia" width="200" class="mb-2" />
+                <input asp-for="ImageFileES" class="form-control" type="file" id="ImageFileES" onchange="showPreviewES(event);" accept=".jpg, .jpeg, .png" aria-describedby="imagenESHelp" />
+                <div id="imagenESHelp" class="form-text">Por favor, solo ingrese imagenes con extension .jpg, .jpeg, .png.</div>
                 <span asp-validation-for="ImageFileES" class="text-danger"></span>
             </div>
             <div class="mb-3">
@@ -108,6 +114,7 @@
                 <select asp-for="SelectedPPEs" class="form-select basic-multiple" asp-items="ViewBag.PPES" multiple>
                     <option value="" disabled>Selecciona los EPP</option>
                 </select>
+                <span asp-validation-for="SelectedPPEs" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
@@ -115,6 +122,7 @@
                 <select asp-for="SelectedRisks" class="form-select basic-multiple" asp-items="ViewBag.Risks" multiple>
                     <option value="" disabled>Selecciona los riesgos</option>
                 </select>
+                <span asp-validation-for="SelectedRisks" class="text-danger"></span>
             </div>
             <div class="mb-3 form-check">
                 <label class="form-check-label">

@@ -9,7 +9,10 @@ namespace safetool.Models
     {
         [Key]
         public int ID { get; set; }
+
+        [Required(ErrorMessage = "El campo UID es obligatorio")]
         public required string UserName { get; set; }
+
         public int RoleID { get; set; } // Foreign key property
 
         // Required reference navigation to principal

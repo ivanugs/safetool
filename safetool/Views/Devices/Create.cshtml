@@ -31,18 +31,23 @@
             </div>
             <div class="mb-3">
                 <label asp-for="AreaID" class="form-label">Área:</label>
-                <select asp-for="AreaID" class ="form-select" id="areas"></select>
+                <select asp-for="AreaID" class="form-select" id="areas" asp-items="ViewBag.Areas">
+                    <option value="" disabled selected>Selecciona el área</option>
+                </select>
                 <span asp-validation-for="AreaID" class="text-danger"></span>
-
             </div>
             <div class="mb-3">
                 <label asp-for="DeviceTypeID" class="form-label">Tipo de equipo:</label>
-                <select asp-for="DeviceTypeID" class ="form-select" asp-items="ViewBag.DeviceTypes"></select>
+                <select asp-for="DeviceTypeID" class ="form-select" asp-items="ViewBag.DeviceTypes">
+                    <option value="" disabled selected>Selecciona el tipo de equipo</option>
+                </select>
                 <span asp-validation-for="DeviceTypeID" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="RiskLevelID" class="form-label">Nivel de riesgo del equipo:</label>
-                <select asp-for="RiskLevelID" class ="form-select" asp-items="ViewBag.RiskLevels"></select>
+                <select asp-for="RiskLevelID" class ="form-select" asp-items="ViewBag.RiskLevels">
+                    <option value="" disabled selected>Selecciona el nivel de riesgo</option>
+                </select>
                 <span asp-validation-for="RiskLevelID" class="text-danger"></span>
             </div>
             <div class="mb-3">

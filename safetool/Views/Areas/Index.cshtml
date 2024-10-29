@@ -22,14 +22,9 @@
 
 <div class="mb-4 fs-6">
     <form asp-action="Index" method="get">
-        <div class="d-flex flex-column">
-            <div>
-                <label for="SearchString" class="form-label">Realizar búsqueda: </label>
-            </div>
-            <div class="d-flex">
-                <input class="form-control me-2 w-25" type="search" placeholder="Búsqueda" name="SearchString" value="@ViewData["CurrentFilter"]" />
-                <button type="submit" class="btn btn-custom">Buscar</button>
-            </div>
+        <div class="d-flex">
+            <input class="form-control me-2 w-25" type="search" placeholder="Búsqueda" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <button type="submit" class="btn btn-custom">Buscar</button>
         </div>
     </form>
 </div>
@@ -69,7 +64,7 @@
                 @Html.DisplayFor(modelItem => item.Location.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Active)
+                @Html.CheckBoxFor(modelItem => item.Active, new { @class = "form-check-input", @disabled = "disabled" })
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Editar</a>
@@ -79,22 +74,30 @@
     </tbody>
 </table>
 
+@if (!Model.Any())
+{
+    <p class="text-center text-black fs-6 mb-4">No se encontraron áreas</p>
+}
+
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-custom @prevDisabled">
-    Anterior
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-custom @nextDisabled">
-    Siguiente
-</a>
+@if (ViewBag.TotalAreas > 15)
+{
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-pageNumber="@(Model.PageIndex - 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-custom @prevDisabled">
+        Anterior
+    </a>
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-pageNumber="@(Model.PageIndex + 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-custom @nextDisabled">
+        Siguiente
+    </a>
+}

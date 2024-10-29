@@ -56,6 +56,7 @@ namespace safetool.Controllers
             }
 
             int pageSize = 15;
+            ViewBag.TotalDeviceTypes = await devicetypes.CountAsync();
             return View(await PaginatedList<DeviceType>.CreateAsync(devicetypes.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 

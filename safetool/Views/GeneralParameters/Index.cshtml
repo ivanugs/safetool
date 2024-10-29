@@ -40,7 +40,8 @@
             <p>@Html.DisplayFor(modelItem => item.EmailAccountUser)</p>
             <p>@Html.DisplayFor(modelItem => item.EmailPort)</p>
             <p>@Html.DisplayFor(modelItem => item.EmailServer)</p>
-            <p>@Html.DisplayFor(modelItem => item.EmailSsl)</p>
+            <p>@Html.CheckBoxFor(modelItem => item.EmailSsl, new { @class = "form-check-input", @disabled = "disabled" })</p>
+
         </div>
     </div>
     <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>

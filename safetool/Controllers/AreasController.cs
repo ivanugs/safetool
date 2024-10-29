@@ -66,6 +66,7 @@ namespace safetool.Controllers
             }
 
             int pageSize = 15;
+            ViewBag.TotalAreas = await areas.CountAsync();
             return View(await PaginatedList<Area>.CreateAsync(areas.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 

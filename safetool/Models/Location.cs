@@ -9,8 +9,13 @@ namespace safetool.Models
     {
         [Key]
         public int ID { get; set; }
+
+        [Required(ErrorMessage = "El campo Nombre es obligatorio.")]
         public required string Name { get; set; }
+
+        [Required(ErrorMessage = "El campo Acrónimo es obligatorio.")]
         public required string Acronym { get; set; }
+
         public bool Active {  get; set; }
 
         // Relacion uno a varios obligatoria con Area

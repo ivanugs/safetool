@@ -77,6 +77,7 @@ namespace safetool.Controllers
             }
 
             int pageSize = 15;
+            ViewBag.TotalSubmissions = await submissions.CountAsync();
             return View(await PaginatedList<FormSubmission>.CreateAsync(submissions.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 

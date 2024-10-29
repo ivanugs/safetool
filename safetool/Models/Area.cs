@@ -10,13 +10,12 @@ namespace safetool.Models
         [Key]
         public int ID { get; set; }
 
-        [Required(AllowEmptyStrings = true)]
+        [Required(ErrorMessage = "Debe seleccionar una localidad")]
         public int LocationID { get; set; } //Foreign key property
 
-        [Required]
+        [Required(ErrorMessage = "El campo Nombre del área es obligatorio")]
         public string? Name { get; set; }
 
-        [Required]
         public bool Active { get; set; }
 
         // Relacion de uno a varios obligatoria con Location

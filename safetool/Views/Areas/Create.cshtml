@@ -23,7 +23,10 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="mb-3">
                 <label for="Location" class="form-label">Localidad:</label>
-                <select id="Location" class ="form-select" asp-items="ViewBag.Locations" asp-for="LocationID"></select>
+                <select id="Location" class ="form-select" asp-items="ViewBag.Locations" asp-for="LocationID">
+                    <option value="" disabled selected>Seleccione una localidad</option>
+                </select>
+                <span asp-validation-for="Location" class="text-danger"></span>
             </div>
             <div class="mb-3">
                 <label asp-for="Name" class="form-label">Nombre del área:</label>

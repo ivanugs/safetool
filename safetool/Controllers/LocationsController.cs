@@ -57,6 +57,7 @@ namespace safetool.Controllers
             }
                     
             int pageSize = 15;
+            ViewBag.TotalLocations = await locations.CountAsync();
             return View(await PaginatedList<Location>.CreateAsync(locations.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 

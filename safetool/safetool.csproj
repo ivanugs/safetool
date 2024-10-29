@@ -7,8 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\emergency_stops\" />
-    <Folder Include="wwwroot\images\pictograms\" />
+    <Compile Remove="wwwroot\images\pictograms\**" />
+    <Content Remove="wwwroot\images\pictograms\**" />
+    <EmbeddedResource Remove="wwwroot\images\pictograms\**" />
+    <None Remove="wwwroot\images\pictograms\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -56,6 +56,7 @@ namespace safetool.Controllers
             }
 
             int pageSize = 15;
+            ViewBag.TotalPPEs = await ppes.CountAsync();
             return View(await PaginatedList<PPE>.CreateAsync(ppes.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
@@ -101,19 +102,31 @@ namespace safetool.Controllers
 
                 if (pPE.ImageFile != null)
                 {
-                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/ppe/");
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + pPE.ImageFile.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    
-                    // Validar que la carpeta existe
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
+                    // Validar si el archivo es una imagen valida
+                    var fileType = pPE.ImageFile.ContentType.ToLower();
+                    var allowedFileTypes = new[] { "image/jpeg", "image/png", "image/jpg" };
 
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    if (!allowedFileTypes.Contains(fileType))
                     {
-                        await pPE.ImageFile.CopyToAsync(fileStream);
+                        ModelState.AddModelError("ImageFile", "Solo se permiten archivos con extensión .jpg, .jpeg o .png");
+                        return View(pPE);
+                    }
+                    else
+                    {
+                        string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/ppe/");
+                        uniqueFileName = Guid.NewGuid().ToString() + "_" + pPE.ImageFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        // Validar que la carpeta existe
+                        if (!Directory.Exists(uploadsFolder))
+                        {
+                            Directory.CreateDirectory(uploadsFolder);
+                        }
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await pPE.ImageFile.CopyToAsync(fileStream);
+                        }
                     }
                 }
 
@@ -173,34 +186,46 @@ namespace safetool.Controllers
             }
             else
             {
-                // Obtener la ruta de la imagen anterior que sera reemplazada
-                var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot" + existingPPE.Image);
-                // Logica para manejar la nueva imagen
-                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/ppe/");
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + pPE.ImageFile.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                // Validar si el archivo es una imagen valida
+                var fileType = pPE.ImageFile.ContentType.ToLower();
+                var allowedFileTypes = new[] { "image/jpeg", "image/png", "image/jpg" };
 
-                // Validar si la carpeta de imagenes de PPE existe
-                if (!Directory.Exists(uploadsFolder))
+                if (!allowedFileTypes.Contains(fileType))
                 {
-                    Directory.CreateDirectory(uploadsFolder); // Si no existe la carpeta, la crea
+                    ModelState.AddModelError("ImageFile", "Solo se permiten archivos con extensión .jpg, .jpeg o .png");
+                    return View(pPE);
                 }
-
-                // Guardar la nueva imagen
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                else
                 {
-                    await pPE.ImageFile.CopyToAsync(fileStream);
-                }
+                    // Obtener la ruta de la imagen anterior que sera reemplazada
+                    var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot" + existingPPE.Image);
+                    // Logica para manejar la nueva imagen
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/ppe/");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + pPE.ImageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                
-                // Validar que exista la imagen que se reemplazara
-                if (System.IO.File.Exists(oldImagePath))
-                {
-                    System.IO.File.Delete(oldImagePath); // Si existe, elimina la imagen
-                }
+                    // Validar si la carpeta de imagenes de PPE existe
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder); // Si no existe la carpeta, la crea
+                    }
 
-                // Actualizar la propiedad Image con la nueva ruta
-                pPE.Image = "/images/ppe/" + uniqueFileName;
+                    // Guardar la nueva imagen
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await pPE.ImageFile.CopyToAsync(fileStream);
+                    }
+
+
+                    // Validar que exista la imagen que se reemplazara
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath); // Si existe, elimina la imagen
+                    }
+
+                    // Actualizar la propiedad Image con la nueva ruta
+                    pPE.Image = "/images/ppe/" + uniqueFileName;
+                }
             }
 
             // Actualizar los campos

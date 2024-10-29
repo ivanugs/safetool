@@ -9,7 +9,10 @@ namespace safetool.Models
     {
         [Key]
         public int ID { get; set; }
+
+        [Required(ErrorMessage = "El campo Tipo de equipo es obligatorio")]
         public required string Name { get; set; }
+
         public bool Active { get; set; }
 
         //Relacion uno a varios obligatoria con Device
