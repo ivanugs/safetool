@@ -51,6 +51,8 @@ namespace safetool.Controllers
             {
                 submissions = submissions.Where(s => s.EmployeeUID.Contains(searchString)
                                           || s.EmployeeName.Contains(searchString)
+                                          || s.Device.Area.Name.Contains(searchString)
+                                          || s.Device.Area.Location.Name.Contains(searchString)
                                           || s.Device.Model.Contains(searchString));
             }
 

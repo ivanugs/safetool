@@ -87,6 +87,18 @@ header {
     position:relative;
 }
 
+.header__section {
+    background: var(--var-color-main);
+    min-height: 6rem;
+    box-sizing: border-box;
+}
+
+.header__title {
+    color: white;
+    font-family: "ContinentalStagSans";
+    font-weight: 500;
+}
+
 main {
     flex-grow: 1;
     padding: 2rem;

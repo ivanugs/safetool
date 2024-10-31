@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using safetool.Data;
 using safetool.Models;
 using safetool.Services;
@@ -19,11 +20,13 @@ namespace safetool.Controllers
     {
         private readonly SafetoolContext _context;
         private readonly IConfiguration _configuration;
+        private readonly AppSettings _appSettings;
 
-        public DevicesController(SafetoolContext context, IConfiguration configuration)
+        public DevicesController(SafetoolContext context, IConfiguration configuration, IOptions<AppSettings> appSettings)
         {
             _context = context;
             _configuration = configuration;
+            _appSettings = appSettings.Value;
         }
 
         public async Task<IActionResult> GetTotalDevices()
@@ -36,6 +39,9 @@ namespace safetool.Controllers
 
         public bool IsRegistered(int deviceID, string employeeUID)
         {
+            //Acceder a la variable MonthsSubmissionsValidity
+            int MonthsSubmissionsValidity = _appSettings.MonthsSubmissionsValidity;
+
             // Obtener la última fecha de registro
             var lastSubmission = _context.FormSubmissions
                 .Where(f => f.DeviceID == deviceID && f.EmployeeUID == employeeUID)
@@ -49,7 +55,7 @@ namespace safetool.Controllers
             }
 
             // Verificar si han pasado más de 6 meses desde la fecha de registro
-            if (lastSubmission.CreatedAt.AddMonths(6) <= DateTime.Now)
+            if (lastSubmission.CreatedAt.AddMonths(MonthsSubmissionsValidity) <= DateTime.Now)
             {
                 return false; // Registro ha expirado
             }

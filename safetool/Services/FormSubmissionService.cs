@@ -1,7 +1,9 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 using safetool.Data;
+using safetool.Models;
 using System.Diagnostics.Metrics;
 
 namespace safetool.Services
@@ -10,19 +12,27 @@ namespace safetool.Services
     {
         private readonly SafetoolContext _context;
         private readonly IEmailService _emailService;
+        private readonly AppSettings _appSettings;
 
-        public FormSubmissionService(SafetoolContext context, IEmailService emailService)
+        public FormSubmissionService(SafetoolContext context, IEmailService emailService, IOptions<AppSettings> appSettings)
         {
             _context = context;
             _emailService = emailService;
+            _appSettings = appSettings.Value;
         }
 
         public async Task CheckAndNotifyExpiredRegistrations()
         {
+            //Acceder a la variable MonthsSubmissionsValidity
+            int MonthsSubmissionsValidity = _appSettings.MonthsSubmissionsValidity;
+
+            //Acceder a la variable SystemUrl
+            string SystemUrl = _appSettings.SystemUrl;
+
             // Obtener los registros que tienen más de 6 meses y que aún no han sido notificados
             var expiredSubmissions = await _context.FormSubmissions
                 .Include(f => f.Device)
-                .Where(f => f.CreatedAt.AddMonths(6) <= DateTime.Now)
+                .Where(f => f.CreatedAt.AddMonths(MonthsSubmissionsValidity) <= DateTime.Now)
                 .ToListAsync();
 
             foreach (var submission in expiredSubmissions)
@@ -85,7 +95,7 @@ namespace safetool.Services
                         </p>
                         <p>
                             Te invitamos a registrarte nuevamente en el siguiente enlace: 
-                            <a href='https://safetool.conti.de/Devices/Details?id={deviceID}'>Safetool</a>.
+                            <a href='{SystemUrl}Devices/Details?id={deviceID}'>{device}</a>.
                         </p>
                         <p>Gracias por su atención.</p>
                         <div class='footer'>

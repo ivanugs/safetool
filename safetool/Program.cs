@@ -7,7 +7,12 @@ using safetool.Data;
 using safetool.Models;
 using safetool.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    //EnvironmentName = Environments.Staging
+});
+
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -42,11 +47,9 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddDbContext<SafetoolContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configuracion email
+// Configuracion servicios SMTP
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<GeneralParameterService>();
-
-
 builder.Services.AddHostedService<ExpiredRegistrationChecker>();
 builder.Services.AddScoped<FormSubmissionService>();
 
@@ -55,7 +58,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using safetool.Data;
 using safetool.Models;
 using safetool.Services;
@@ -12,12 +13,14 @@ namespace safetool.Controllers
     {
         private readonly IEmailService _emailService;
         private readonly SafetoolContext _context;
+        private readonly AppSettings _appSettings;
 
         
-        public EmailController(IEmailService emailService, SafetoolContext context)
+        public EmailController(IEmailService emailService, SafetoolContext context, IOptions<AppSettings> appSettings)
         {
             _emailService = emailService;
             _context = context;
+            _appSettings = appSettings.Value;
         }
 
         [HttpPost]
@@ -38,6 +41,7 @@ namespace safetool.Controllers
             var device = await _context.Devices.FindAsync(deviceID);
             var fullName = @User.Claims.FirstOrDefault(c => c.Type == "FullName")?.Value;
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            int MonthsSubmissionsValidity = _appSettings.MonthsSubmissionsValidity;
 
             var deviceName = device.Name;
 
@@ -84,7 +88,7 @@ namespace safetool.Controllers
                     <div class='container'>
                         <h1>{fullName},</h1>
                         <p>
-                            Usted ha realizado exitosamente el registro del equipo: <strong>{deviceName}</strong>. <br> Su registro cuenta con una vigencia de 6 meses.
+                            Usted ha realizado exitosamente el registro del equipo: <strong>{deviceName}</strong>. <br> Su registro cuenta con una vigencia de {MonthsSubmissionsValidity} meses.
                         </p>
                         <p>Gracias por su atención.</p>
                         <div class='footer'>
