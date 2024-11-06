@@ -71,9 +71,17 @@ Safetool is an ASP.NET Core application designed to help companies manage risk a
 
 ## Screenshots
 
-| Operator Dashboard                        | Admin Equipment Management               |
+| Login                    | Home               |
 | ----------------------------------------- | ---------------------------------------- |
-| ![Operator Dashboard](path/to/screenshot) | ![Admin Dashboard](path/to/screenshot)   |
+| ![Login](assets/Inicio-de-sesión-Safetool.png) | ![Operator Dashboard](assets/Inicio-Safetool.png)   |
+
+| List of Devices                       | Details of Device               |
+| ----------------------------------------- | ---------------------------------------- |
+| ![List of Devices](assets/Equipos-Safetool.png) | ![Details of Device](assets/Detalles-Safetool.png)   |
+
+| Admin Catalog Management               |
+| ---------------------------------------- |
+| ![Admin Catalog](assets/Administración-Safetool.png)   |
 
 ## Contributing
 
